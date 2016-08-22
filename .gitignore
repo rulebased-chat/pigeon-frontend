@@ -1,12 +1,26 @@
+<<<<<<< HEAD
 pom.xml
 pom.xml.asc
 *jar
 /lib/
 /classes/
-/target/
+/target
 /checkouts/
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
 .lein-failures
 .nrepl-port
+/checkouts
+profiles.clj
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
+/resources/public/js
+/out
+/.repl
+*.log
+/.env
