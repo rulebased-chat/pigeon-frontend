@@ -11,7 +11,8 @@
 (def app (reagent/atom 
   {:user {:username "foobar1"
           :password "bar1"
-          :full-name "Mr. Foo Bar"}}))
+          :full-name "Mr. Foo Bar"}
+   :session {:token nil}}))
 
 ;; -------------------------
 ;; Ajax
@@ -21,6 +22,26 @@
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
+
+(defn login-succesful [response]
+  (swap! app assoc-in [:session :token] (:token response)))
+
+(defn login-user [response]
+  (POST "http://localhost:3000/api/v0/session"
+    {:params {:username (get-in @app [:user :username])
+              :password (get-in @app [:user :password])}
+     :handler login-succesful
+     :error-handler error-handler 
+     :response-format :json 
+     :keywords? true}))
+
+(defn register-user [_]
+  (let [response (PUT "http://localhost:3000/api/v0/user" 
+        {:params {:username (get-in @app [:user :username])
+                  :password (get-in @app [:user :password])
+                  :full_name (get-in @app [:user :full-name])}
+         :handler login-user
+         :error-handler error-handler})]))
 
 ;; -------------------------
 ;; Views
@@ -38,7 +59,7 @@
     [:div.row
       [:div.col-sm-12
         [:h2 "Sign up"]
-        [:form {:method "POST" :action "/register"}
+        [:div
           [:p [:input {:name "username" :placeholder "username" 
                        :value (get-in @app [:user :username]) 
                        :on-change #(swap! app assoc-in [:user :username] (-> % .-target .-value))}]]
@@ -48,7 +69,7 @@
           [:p [:input {:name "full_name" :placeholder "full_name" 
                        :value (get-in @app [:user :full-name]) 
                        :on-change #(swap! app assoc-in [:user :full-name] (-> % .-target .-value))}]]
-          [:p [:input {:type "submit"}]]]]]])
+          [:p [:button.btn.btn-default {:type "submit" :on-click register-user} "Submit"]]]]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
