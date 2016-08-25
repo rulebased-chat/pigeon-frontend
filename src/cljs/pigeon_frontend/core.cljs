@@ -23,14 +23,14 @@
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
 
-(defn login-succesful [response]
+(defn login-successful [response]
   (swap! app assoc-in [:session :token] (:token response)))
 
 (defn login-user [response]
   (POST "http://localhost:3000/api/v0/session"
     {:params {:username (get-in @app [:user :username])
               :password (get-in @app [:user :password])}
-     :handler login-succesful
+     :handler login-successful
      :error-handler error-handler 
      :response-format :json 
      :keywords? true}))
