@@ -6,6 +6,13 @@
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]))
 
+;; App state
+
+(def app (reagent/atom 
+  {:user {:username "foobar1"
+          :password "bar1"
+          :full-name "Mr. Foo Bar"}}))
+
 ;; -------------------------
 ;; Ajax
 
@@ -32,9 +39,15 @@
       [:div.col-sm-12
         [:h2 "Sign up"]
         [:form {:method "POST" :action "/register"}
-          [:p [:input {:name "username" :placeholder "username"}]]
-          [:p [:input {:name "password" :placeholder "password" :type "password"}]]
-          [:p [:input {:name "full_name" :placeholder "full_name"}]]
+          [:p [:input {:name "username" :placeholder "username" 
+                       :value (get-in @app [:user :username]) 
+                       :on-change #(swap! app assoc-in [:user :username] (-> % .-target .-value))}]]
+          [:p [:input {:name "password" :placeholder "password" :type "password" 
+                       :value (get-in @app [:user :password]) 
+                       :on-change #(swap! app assoc-in [:user :password] (-> % .-target .-value))}]]
+          [:p [:input {:name "full_name" :placeholder "full_name" 
+                       :value (get-in @app [:user :full-name]) 
+                       :on-change #(swap! app assoc-in [:user :full-name] (-> % .-target .-value))}]]
           [:p [:input {:type "submit"}]]]]]])
 
 (defn current-page []
