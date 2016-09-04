@@ -12,6 +12,7 @@
   (swap! app assoc :session response))
 
 (defn login-user [response]
+  ;; TODO: environment specific API context
   (POST "http://localhost:3000/api/v0/session"
     {:params {:username (get-in @app [:fields :register-page :username])
               :password (get-in @app [:fields :register-page :password])}
@@ -21,6 +22,7 @@
      :keywords? true}))
 
 (defn register-user [_]
+  ;; TODO: environment specific API context
   (let [response (PUT "http://localhost:3000/api/v0/user" 
         {:params {:username (get-in @app [:fields :register-page :username])
                   :password (get-in @app [:fields :register-page :password])
