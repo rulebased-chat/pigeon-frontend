@@ -20,6 +20,7 @@
 (defn handler [response]
   (.log js/console (str response)))
 
+;; TODO: handle errors with defmulti based on http statuses
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
 
