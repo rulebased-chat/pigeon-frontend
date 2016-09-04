@@ -9,11 +9,9 @@
               [pigeon-frontend.view-model :refer [app]]))
 
 (defn login-successful [response]
-  (.log js/console "Login succesful")
   (swap! app assoc-in [:session :token] (:token response)))
 
 (defn login-user [response]
-  (.log js/console "Logging in...")
   (POST "http://localhost:3000/api/v0/session"
     {:params {:username (get-in @app [:user :username])
               :password (get-in @app [:user :password])}
@@ -23,7 +21,6 @@
      :keywords? true}))
 
 (defn register-user [_]
-  (.log js/console "Registering...")
   (let [response (PUT "http://localhost:3000/api/v0/user" 
         {:params {:username (get-in @app [:user :username])
                   :password (get-in @app [:user :password])

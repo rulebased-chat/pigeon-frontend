@@ -5,18 +5,11 @@
               [accountant.core :as accountant]
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
-              [pigeon-frontend.views.register-page :refer [register-page]]))
+              [pigeon-frontend.views.register-page :refer [register-page]]
+              [pigeon-frontend.views.home-page :refer [home-page]]))
 
 ;; -------------------------
 ;; Views
-
-(defn home-page []
-  [layout/layout
-    [:div.jumbotron.jumbotron-fluid 
-      [:div.container
-        [:div.col-sm-12
-        [:h2 "pigeon-frontend"]
-        [:div [:a.btn.btn-primary {:href "/register"} "Sign up"]]]]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
