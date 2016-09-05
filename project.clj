@@ -105,12 +105,12 @@
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
 
-                   :env {:dev true
+                   :env {:dev "true"
                          :api-context "http://localhost:3000"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-                       :env {:production true}
+                       :env {:production "true"}
                        :aot :all
                        :omit-source true}})
