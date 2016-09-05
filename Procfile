@@ -1,1 +1,1 @@
-web: java  -jar server.jar
+web: java  -jar target/pigeon-frontend.jar
