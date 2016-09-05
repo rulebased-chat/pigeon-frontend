@@ -1,9 +1,12 @@
 (ns pigeon-frontend.server
   (:require [pigeon-frontend.handler :refer [app]]
             [config.core :refer [env]]
-            [ring.adapter.jetty :refer [run-jetty]])
+            [ring.adapter.jetty :refer [run-jetty]]
+            [environ.core :as environ])
   (:gen-class))
 
- (defn -main [& args]
-   (let [port (Integer/parseInt (or (env :port) "3000"))]
-     (run-jetty app {:port port :join? false})))
+(defmacro get-api-context-env [] (get environ/env :api-context))
+
+(defn -main [& args]
+  (let [port (Integer/parseInt (or (env :port) "3001"))]
+    (run-jetty app {:port port :join? false})))

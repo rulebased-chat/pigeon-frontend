@@ -6,14 +6,14 @@
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.ajax :refer [error-handler]]
-              [pigeon-frontend.view-model :refer [app]]))
+              [pigeon-frontend.view-model :refer [app]]
+              [pigeon-frontend.context :refer [get-context-path]]))
 
 (defn login-successful [response]
   (swap! app assoc :session response))
 
 (defn login-user [response]
-  ;; TODO: environment specific API context
-  (POST "http://localhost:3000/api/v0/session"
+  (POST (get-context-path "/api/v0/session")
     {:params {:username (get-in @app [:fields :register-page :username])
               :password (get-in @app [:fields :register-page :password])}
      :handler login-successful
@@ -22,8 +22,7 @@
      :keywords? true}))
 
 (defn register-user [_]
-  ;; TODO: environment specific API context
-  (let [response (PUT "http://localhost:3000/api/v0/user" 
+  (let [response (PUT (get-context-path "/api/v0/user")
         {:params {:username (get-in @app [:fields :register-page :username])
                   :password (get-in @app [:fields :register-page :password])
                   :full_name (get-in @app [:fields :register-page :full-name])}
