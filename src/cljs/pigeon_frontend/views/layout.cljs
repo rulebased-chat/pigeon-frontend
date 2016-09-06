@@ -10,9 +10,7 @@
     [:div.navbar.navbar-light.bg-faded
       [:a.navbar-brand {:href "/"} "pigeon-frontend"]
       [:div.pull-xs-right
-        [:a {:href "/login"} "Login"]
-        [:small.text-muted.m-x-1 "or"]
-        [:a.btn.btn-info {:href "/register"} "Sign up"]]
-      ]
+        [:small.m-r-1 [:a {:href "/login"} "Log in"]]
+        [:a.btn.btn-info {:href "/register"} "Sign up"]]]
     [:div.container
       body]])
