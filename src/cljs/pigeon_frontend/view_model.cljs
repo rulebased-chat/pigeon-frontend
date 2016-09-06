@@ -6,4 +6,6 @@
     {:session {:token nil}
      :fields {:register-page {:username ""
                               :password ""
-                              :full-name ""}}}))
+                              :full-name ""}
+              :login-page {:username ""
+                           :password ""}}}))

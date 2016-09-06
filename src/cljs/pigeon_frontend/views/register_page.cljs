@@ -7,18 +7,16 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
-              [pigeon-frontend.context :refer [get-context-path]]))
-
-(defn login-successful [response]
-  (swap! app assoc :session response))
+              [pigeon-frontend.context :refer [get-context-path]]
+              [pigeon-frontend.views.login-page :refer [login-successful]]))
 
 (defn login-user [response]
   (POST (get-context-path "/api/v0/session")
     {:params {:username (get-in @app [:fields :register-page :username])
               :password (get-in @app [:fields :register-page :password])}
      :handler login-successful
-     :error-handler error-handler 
-     :response-format :json 
+     :error-handler error-handler
+     :response-format :json
      :keywords? true}))
 
 (defn register-user [_]

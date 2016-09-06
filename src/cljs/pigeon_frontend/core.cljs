@@ -6,6 +6,7 @@
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.register-page :refer [register-page]]
+              [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.home-page :refer [home-page]]))
 
 ;; -------------------------
@@ -19,6 +20,9 @@
 
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
+
+(secretary/defroute "/login" []
+  (session/put! :current-page #'login-page))
 
 (secretary/defroute "/register" []
   (session/put! :current-page #'register-page))
