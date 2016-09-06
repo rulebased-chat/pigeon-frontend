@@ -9,9 +9,4 @@
               [pigeon-frontend.view-model :refer [app]]))
 
 (defn home-page []
-  [layout/layout
-    [:div.jumbotron.jumbotron-fluid 
-      [:div.container
-        [:div.col-sm-12
-        [:h2 "pigeon-frontend"]
-        [:div [:a.btn.btn-primary {:href "/register"} "Sign up"]]]]]])
+  [layout/layout])
