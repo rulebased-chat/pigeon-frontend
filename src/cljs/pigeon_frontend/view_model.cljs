@@ -8,4 +8,5 @@
                               :password ""
                               :full-name ""}
               :login-page {:username ""
-                           :password ""}}}))
+                           :password ""}
+              :rooms-page {}}}))

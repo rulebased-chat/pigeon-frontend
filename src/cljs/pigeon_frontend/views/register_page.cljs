@@ -8,7 +8,8 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.views.login-page :refer [login-successful]]))
+              [pigeon-frontend.views.login-page :refer [login-successful]]
+              [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
 
 (defn login-user [response]
   (POST (get-context-path "/api/v0/session")

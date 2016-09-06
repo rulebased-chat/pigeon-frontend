@@ -7,10 +7,13 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
-              [pigeon-frontend.context :refer [get-context-path]]))
+              [pigeon-frontend.context :refer [get-context-path]]
+              [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
 
 (defn login-successful [response]
-  (swap! app assoc :session response))
+  (swap! app assoc :session response)
+  ;; todo: this should really be added through add-watch
+  (session/put! :current-page #'rooms-page))
 
 (defn login-user [response]
   (POST (get-context-path "/api/v0/session")

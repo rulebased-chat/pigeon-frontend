@@ -7,10 +7,8 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.register-page :refer [register-page]]
               [pigeon-frontend.views.login-page :refer [login-page]]
-              [pigeon-frontend.views.home-page :refer [home-page]]))
-
-;; -------------------------
-;; Views
+              [pigeon-frontend.views.home-page :refer [home-page]]
+              [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -26,6 +24,9 @@
 
 (secretary/defroute "/register" []
   (session/put! :current-page #'register-page))
+
+(secretary/defroute "/rooms" []
+  (session/put! :current-page #'rooms-page))
 
 ;; -------------------------
 ;; Initialize app
