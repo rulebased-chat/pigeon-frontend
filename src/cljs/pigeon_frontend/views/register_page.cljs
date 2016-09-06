@@ -29,10 +29,10 @@
          :error-handler error-handler})]))
 
 (defn register-page []
-  [layout/layout
+  [layout/layout "Sign up"
+                 "Pigeon is a rule-based messaging service for simulating war communications in multiplayer wargaming sessions"
     [:div.row
       [:div.col-sm-12
-        [:h2 "Sign up"]
         [:div
           [:p [:input {:name "username" 
                        :placeholder "username" 

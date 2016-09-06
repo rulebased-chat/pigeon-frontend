@@ -4,7 +4,7 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]))
 
-(defn layout [& body]
+(defn layout [header lead-text & body]
   [:div
     [:link {:rel "stylesheet" :type "text/css" :href "assets/bootstrap/css/bootstrap.css"}]
     [:div.navbar.navbar-light.bg-faded
@@ -12,5 +12,8 @@
       [:div.pull-xs-right
         [:small.m-r-1 [:a {:href "/login"} "Log in"]]
         [:a.btn.btn-info {:href "/register"} "Sign up"]]]
-    [:div.container
+    [:div.jumbotron
+      [:h2 header]
+      [:p.lead lead-text]]
+    [:div.container-fluid 
       body]])

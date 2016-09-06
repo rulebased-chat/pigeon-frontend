@@ -25,10 +25,10 @@
      :keywords? true}))
 
 (defn login-page []
-  [layout/layout
+  [layout/layout "Log in"
+                 "Enter your username and password to sign in"
     [:div.row
       [:div.col-sm-12
-        [:h2 "Login"]
         [:div
           [:p [:input {:name "username" 
                        :placeholder "username" 
