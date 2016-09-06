@@ -9,4 +9,5 @@
                               :full-name ""}
               :login-page {:username ""
                            :password ""}
-              :rooms-page {}}}))
+              :rooms-page {}}
+     :data {:rooms [{:name "foo"} {:name "bar"}]}}))
