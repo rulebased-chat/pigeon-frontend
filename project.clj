@@ -78,7 +78,7 @@
 
   :figwheel
   {:http-server-root "public"
-   :server-port 3449
+   :server-port 3001
    :nrepl-port 7002
    :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
                       ]
