@@ -11,7 +11,8 @@
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
 
 (defn login-successful [response]
-  (swap! app assoc :session response)
+  ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
+  (swap! app merge response)
   ;; todo: this should really be added through add-watch
   (session/put! :current-page #'rooms-page))
 
@@ -20,8 +21,8 @@
     {:params {:username (get-in @app [:fields :login-page :username])
               :password (get-in @app [:fields :login-page :password])}
      :handler login-successful
-     :error-handler error-handler 
-     :response-format :json 
+     :error-handler error-handler
+     :response-format :json
      :keywords? true}))
 
 (defn login-page []

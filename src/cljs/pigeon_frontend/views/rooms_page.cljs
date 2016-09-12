@@ -10,26 +10,28 @@
               [pigeon-frontend.view-model :refer [app]]))
 
 (defn set-rooms [response]
-  (.log js/console response)
   (swap! app assoc-in [:data :rooms] response))
 
-(GET (get-context-path "/api/v0/room")
-  {:handler set-rooms
-   :error-handler error-handler
-   :response-format :json
-   :keywords? true})
-
 (defn rooms-page []
-  [layout/layout "Rooms"
-                   "Join a room and start a rule-based conversation with your friends or co-workers"
-      [:div.container-fluid
-        [:div.row
-            [:div.col-sm-12
-              [:table.table.table-striped
-                [:thead
-                  [:tr
-                    [:th "Name"]]]
-                [:tbody
-                  (for [room (get-in @app [:data :rooms])]
-                    ^{:key (:name room)}
-                    [:tr [:td (:name room)]])]]]]]])
+  (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
+                          {:handler set-rooms
+                           :error-handler error-handler
+                           :headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
+                           :response-format :json
+                           :keywords? true}))]
+    (get-rooms)
+    (fn []
+      [layout/layout
+        "Rooms"
+        "Join a room and start a rule-based conversation with your friends or co-workers"
+        [:div.container-fluid
+          [:div.row
+              [:div.col-sm-12
+                [:table.table.table-striped
+                  [:thead
+                    [:tr
+                      [:th "Name"]]]
+                  [:tbody
+                    (for [room (get-in @app [:data :rooms])]
+                      ^{:key (:name room)}
+                      [:tr [:td (:name room)]])]]]]]])))
