@@ -13,8 +13,9 @@
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
   (swap! app merge response)
-  ;; todo: this should really be added through add-watch
-  (session/put! :current-page #'rooms-page))
+  ;; todo: these should really be added through add-watch
+  (session/put! :current-page #'rooms-page)
+  (accountant/navigate! "/rooms"))
 
 (defn login-user [response]
   (POST (get-context-path "/api/v0/session")
