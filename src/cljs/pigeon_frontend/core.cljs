@@ -9,6 +9,7 @@
               [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.home-page :refer [home-page]]
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
+              [pigeon-frontend.views.room-create-page :refer [room-create-page]]
               [pigeon-frontend.view-model :refer [app]]))
 
 (defn current-page []
@@ -29,12 +30,11 @@
 (secretary/defroute "/rooms" []
   (session/put! :current-page #'rooms-page))
 
+(secretary/defroute "/room" []
+  (session/put! :current-page #'room-create-page))
+
 ;; -------------------------
 ;; Initialize app
-
-(defn initialize-app! [token]
-  (swap! app assoc-in [:session :token] token)
-  (init!))
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
@@ -49,3 +49,7 @@
        (secretary/locate-route path))})
   (accountant/dispatch-current!)
   (mount-root))
+
+(defn initialize-app! [token]
+  (swap! app assoc-in [:session :token] token)
+  (init!))

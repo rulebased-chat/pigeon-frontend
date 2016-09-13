@@ -25,6 +25,7 @@
         "Rooms"
         "Join a room and start a rule-based conversation with your friends or co-workers"
         [:div.container-fluid
+          [:p [:a.btn.btn-lg.btn-outline-primary {:href "/room"} "Create a room"]]
           [:div.row
               [:div.col-sm-12
                 [:table.table.table-striped
