@@ -34,5 +34,5 @@
                       [:th "Name"]]]
                   [:tbody
                     (for [room (get-in @app [:data :rooms])]
-                      ^{:key (:name room)}
+                      ^{:key room}
                       [:tr [:td (:name room)]])]]]]]])))

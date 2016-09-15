@@ -11,4 +11,5 @@
                            :password ""}
               :rooms-page {}
               :room-create-page {:name ""}}
-     :data {:rooms [{:name "foo"} {:name "bar"}]}}))
+     :data {:rooms [{:name "foo"} {:name "bar"}]}
+     :errors #{}}))
