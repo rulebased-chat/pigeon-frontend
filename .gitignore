@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 pom.xml
 pom.xml.asc
 *jar
@@ -25,3 +24,4 @@ pom.xml.asc
 *.log
 /.env
 *.min.css
+*.iml
