@@ -33,7 +33,7 @@
                  "Enter your username and password to sign in"
     [:div.row
       [:div.col-sm-12
-        [:div
+        [:div ;; todo: change to :form and figure out why submit tries to refreseh page
           [:p [:input {:name "username" 
                        :placeholder "username" 
                        :value (get-in @app [:fields :login-page :username]) 
