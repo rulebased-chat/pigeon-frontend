@@ -20,7 +20,8 @@
      :response-format :json
      :keywords? true}))
 
-(defn register-user [_]
+(defn register-user [event]
+  (.preventDefault event)
   (let [response (PUT (get-context-path "/api/v0/user")
         {:params {:username (get-in @app [:fields :register-page :username])
                   :password (get-in @app [:fields :register-page :password])
@@ -33,7 +34,7 @@
                  "Pigeon is a rule-based messaging service for simulating war communications in multiplayer wargaming sessions"
     [:div.row
       [:div.col-sm-12
-        [:div
+        [:form {:on-submit register-user}
           [:p [:input {:name "username" 
                        :placeholder "username" 
                        :value (get-in @app [:fields :register-page :username]) 
@@ -46,4 +47,4 @@
                        :placeholder "full_name" 
                        :value (get-in @app [:fields :register-page :full-name]) 
                        :on-change #(swap! app assoc-in [:fields :register-page :full-name] (-> % .-target .-value))}]]
-          [:p [:button.btn.btn-default {:type "submit" :on-click register-user} "Submit"]]]]]])
+          [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

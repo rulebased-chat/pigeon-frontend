@@ -14,7 +14,8 @@
   (session/put! :current-page #'login-page)
   (accountant/navigate! "/rooms"))
 
-(defn create-room [_]
+(defn create-room [event]
+  (.preventDefault event)
   (let [response (POST (get-context-path "/api/v0/room")
         {:params {:name (get-in @app [:fields :room-create-page :name])}
          :headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
@@ -26,9 +27,9 @@
                  "A room consists of many people and groups"
     [:div.row
       [:div.col-sm-12
-        [:div
+        [:form {:on-submit create-room}
           [:p [:input {:name "name"
                        :placeholder "name"
                        :value (get-in @app [:fields :room-create-page :name])
                        :on-change #(swap! app assoc-in [:fields :room-create-page :name] (-> % .-target .-value))}]]
-          [:p [:button.btn.btn-default {:type "submit" :on-click create-room} "Submit"]]]]]])
+          [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

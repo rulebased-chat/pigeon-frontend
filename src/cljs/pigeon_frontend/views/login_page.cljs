@@ -20,6 +20,7 @@
   (accountant/navigate! "/rooms"))
 
 (defn login-user [response]
+  (.preventDefault response)
   (POST (get-context-path "/api/v0/session")
     {:params {:username (get-in @app [:fields :login-page :username])
               :password (get-in @app [:fields :login-page :password])}
@@ -33,7 +34,7 @@
                  "Enter your username and password to sign in"
     [:div.row
       [:div.col-sm-12
-        [:div ;; todo: change to :form and figure out why submit tries to refreseh page
+        [:form {:on-submit login-user}
           [:p [:input {:name "username" 
                        :placeholder "username" 
                        :value (get-in @app [:fields :login-page :username]) 
@@ -42,4 +43,4 @@
                        :placeholder "password" :type "password" 
                        :value (get-in @app [:fields :login-page :password]) 
                        :on-change #(swap! app assoc-in [:fields :login-page :password] (-> % .-target .-value))}]]
-          [:p [:button.btn.btn-default {:type "submit" :on-click login-user} "Submit"]]]]]])
+          [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])
