@@ -34,7 +34,7 @@
   :ring {:handler pigeon-frontend.handler/app
          :uberwar-name "pigeon-frontend.war"}
 
-  :min-lein-version "2.5.0"
+  :min-lein-version "2.6.1"
 
   :uberjar-name "pigeon-frontend.jar"
 
