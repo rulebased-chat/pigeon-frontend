@@ -13,8 +13,7 @@
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
   (swap! app merge response)
-  (.setItem (.-localStorage js/window) "token"
-                                       (get-in response [:session :token]))
+  (.setItem (.-localStorage js/window) "session" (get-in response [:session]))
   ;; todo: these should really be added through add-watch
   (session/put! :current-page #'rooms-page)
   (accountant/navigate! "/rooms"))

@@ -4,15 +4,28 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [pigeon-frontend.views.layout :as layout]
-              [ajax.core :refer [GET POST PUT DELETE]]
+              [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.view-model :refer [app]]))
+              [pigeon-frontend.view-model :refer [app]]
+              [dommy.core :refer-macros [sel sel1]]))
 
 (defn set-rooms [response]
   (swap! app assoc-in [:data :rooms] response))
 
+(defn join-room [event data]
+  (.preventDefault event)
+  (println data)
+  (let [response (POST (get-context-path "/api/v0/participant")
+                      {:headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
+                       :params data
+                       ;;:handler login-user ;; TODO: set current room as joined
+                       :error-handler error-handler
+                       :format (json-request-format)
+                       :response-format (json-response-format {:keywords? true})})]))
+
 (defn rooms-page []
+  (print (get-in @app [:session]))
   (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
                           {:handler set-rooms
                            :error-handler error-handler
@@ -31,8 +44,13 @@
                 [:table.table.table-striped
                   [:thead
                     [:tr
-                      [:th "Name"]]]
+                      [:th "Name"]
+                      [:th]]]
                   [:tbody
                     (for [room (get-in @app [:data :rooms])]
                       ^{:key room}
-                      [:tr [:td (:name room)]])]]]]]])))
+                      [:tr [:td (:name room)]
+                           [:td [:form {:on-submit #(join-room % {:room_id (:id room)
+                                                                  :username (get-in @app [:session :username])
+                                                                  :name (get-in @app [:session :username])})}
+                                  [:button.btn.btn-outline-success.btn-sm {:type "submit"} "Join room"]]]])]]]]]])))
