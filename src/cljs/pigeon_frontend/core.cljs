@@ -50,6 +50,6 @@
   (accountant/dispatch-current!)
   (mount-root))
 
-(defn initialize-app! [token]
-  (swap! app assoc-in [:session :token] token)
+(defn initialize-app! [session]
+  (swap! app assoc-in [:session] session)
   (init!))

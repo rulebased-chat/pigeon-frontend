@@ -8,14 +8,14 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.context :refer [get-context-path]]
               [pigeon-frontend.view-model :refer [app]]
-              [dommy.core :refer-macros [sel sel1]]))
+              [dommy.core :refer-macros [sel sel1]]
+              [hodgepodge.core :refer [local-storage clear!]]))
 
 (defn set-rooms [response]
   (swap! app assoc-in [:data :rooms] response))
 
 (defn join-room [event data]
   (.preventDefault event)
-  (println data)
   (let [response (POST (get-context-path "/api/v0/participant")
                       {:headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
                        :params data
@@ -25,7 +25,6 @@
                        :response-format (json-response-format {:keywords? true})})]))
 
 (defn rooms-page []
-  (print (get-in @app [:session]))
   (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
                           {:handler set-rooms
                            :error-handler error-handler

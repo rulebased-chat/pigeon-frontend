@@ -8,12 +8,13 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
+              [pigeon-frontend.views.rooms-page :refer [rooms-page]]
+              [hodgepodge.core :refer [local-storage clear!]]))
 
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
   (swap! app merge response)
-  (.setItem (.-localStorage js/window) "session" (get-in response [:session]))
+  (assoc! local-storage :session (get-in response [:session]))
   ;; todo: these should really be added through add-watch
   (session/put! :current-page #'rooms-page)
   (accountant/navigate! "/rooms"))
