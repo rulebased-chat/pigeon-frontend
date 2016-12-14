@@ -3,7 +3,7 @@
 
 (def app
   (reagent/atom
-    {:session {:token nil}
+    {:session {:token nil :username nil}
      :fields {:register-page {:username ""
                               :password ""
                               :full-name ""}
@@ -11,5 +11,5 @@
                            :password ""}
               :rooms-page {}
               :room-create-page {:name ""}}
-     :data {:rooms [{:name "foo"} {:name "bar"}]}
+     :data {:rooms [{:name "placeholder room"}]}
      :errors #{}}))

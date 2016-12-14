@@ -3,11 +3,12 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [pigeon-frontend.view-model :refer [app]]))
+              [pigeon-frontend.view-model :refer [app]]
+              [hodgepodge.core :refer [local-storage clear!]]))
 
 (defn logout [_]
   (swap! app assoc-in [:session] nil)
-  (.clear (.-localStorage js/window))
+  (clear! local-storage)
   (accountant/navigate! "/"))
 
 (defn close-error [error]
