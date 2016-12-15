@@ -9,7 +9,8 @@
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
-              [hodgepodge.core :refer [local-storage clear!]]))
+              [hodgepodge.core :refer [local-storage clear!]]
+              [re-frame.core :as re]))
 
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
@@ -37,10 +38,10 @@
         [:form {:on-submit login-user}
           [:p [:input {:name "username" 
                        :placeholder "username" 
-                       :value (get-in @app [:fields :login-page :username]) 
-                       :on-change #(swap! app assoc-in [:fields :login-page :username] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [:login-page-username])
+                       :on-change #(re/dispatch [:login-page-username (-> % .-target .-value)])}]]
           [:p [:input {:name "password" 
                        :placeholder "password" :type "password" 
-                       :value (get-in @app [:fields :login-page :password]) 
-                       :on-change #(swap! app assoc-in [:fields :login-page :password] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [:login-page-password])
+                       :on-change #(re/dispatch [:login-page-password (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])
