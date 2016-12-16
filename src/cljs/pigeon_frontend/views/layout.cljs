@@ -1,13 +1,14 @@
 (ns pigeon-frontend.views.layout
-    (:require [reagent.core :as reagent :refer [atom]]
-              [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
-              [accountant.core :as accountant]
-              [pigeon-frontend.view-model :refer [app]]
-              [hodgepodge.core :refer [local-storage clear!]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [reagent.session :as session]
+            [secretary.core :as secretary :include-macros true]
+            [accountant.core :as accountant]
+            [pigeon-frontend.view-model :refer [app]]
+            [hodgepodge.core :refer [local-storage clear!]]
+            [re-frame.core :as re]))
 
 (defn logout [_]
-  (swap! app assoc-in [:session] nil)
+  (re/dispatch [:logout])
   (clear! local-storage)
   (accountant/navigate! "/"))
 
@@ -20,7 +21,7 @@
       [:link {:rel "stylesheet" :type "text/css" :href "assets/bootstrap/css/bootstrap.css"}]
       [:div.navbar.navbar-light.bg-faded
         [:a.navbar-brand {:href "/"} "pigeon-frontend"]
-        (if-let [logged-in? (get-in @app [:session :token])]
+        (if-let [logged-in? @(re/subscribe [:session-token])]
           [:div.pull-xs-right
             [:button.btn.btn-info {:on-click logout} "Log out"]]
           [:div.pull-xs-right

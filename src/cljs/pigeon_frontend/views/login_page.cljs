@@ -14,8 +14,8 @@
 
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
-  (swap! app merge response)
-  (assoc! local-storage :session (get-in response [:session]))
+  (re/dispatch [:login (:session response)])
+  (assoc! local-storage :session (:session response))
   ;; todo: these should really be added through add-watch
   (session/put! :current-page #'rooms-page)
   (accountant/navigate! "/rooms"))
@@ -36,12 +36,12 @@
     [:div.row
       [:div.col-sm-12
         [:form {:on-submit login-user}
-          [:p [:input {:name "username" 
-                       :placeholder "username" 
+          [:p [:input {:name "username"
+                       :placeholder "username"
                        :value @(re/subscribe [[:fields :login-page :username]])
                        :on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])}]]
-          [:p [:input {:name "password" 
-                       :placeholder "password" :type "password" 
+          [:p [:input {:name "password"
+                       :placeholder "password" :type "password"
                        :value @(re/subscribe [[:fields :login-page :password]])
                        :on-change #(re/dispatch [[:fields :login-page :password] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

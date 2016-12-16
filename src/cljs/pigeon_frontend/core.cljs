@@ -40,7 +40,6 @@
 ;; Initialize app
 
 (defn mount-root []
-  (re/dispatch [:initialize])
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
@@ -55,5 +54,6 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (swap! app assoc-in [:session] session)
+  (re/dispatch-sync [:initialize])
+  (re/dispatch-sync [:login session])
   (init!))

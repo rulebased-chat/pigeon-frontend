@@ -18,8 +18,8 @@
 (defn create-room [event]
   (.preventDefault event)
   (let [response (POST (get-context-path "/api/v0/room")
-        {:params {:name (get-in @app [:fields :room-create-page :name])}
-         :headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
+        {:params {:name @(re/subscribe [[:fields :room-create-page :name]])}
+         :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
          :handler redirect-upon-success
          :error-handler error-handler})]))
 
