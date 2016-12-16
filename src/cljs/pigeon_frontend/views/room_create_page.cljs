@@ -8,7 +8,8 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.views.login-page :refer [login-page]]))
+              [pigeon-frontend.views.login-page :refer [login-page]]
+              [re-frame.core :as re]))
 
 (defn redirect-upon-success []
   (session/put! :current-page #'login-page)
@@ -30,6 +31,6 @@
         [:form {:on-submit create-room}
           [:p [:input {:name "name"
                        :placeholder "name"
-                       :value (get-in @app [:fields :room-create-page :name])
-                       :on-change #(swap! app assoc-in [:fields :room-create-page :name] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [[:fields :room-create-page :name]])
+                       :on-change #(re/dispatch [[:fields :room-create-page :name] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

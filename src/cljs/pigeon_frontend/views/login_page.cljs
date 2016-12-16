@@ -38,10 +38,10 @@
         [:form {:on-submit login-user}
           [:p [:input {:name "username" 
                        :placeholder "username" 
-                       :value @(re/subscribe [:login-page-username])
-                       :on-change #(re/dispatch [:login-page-username (-> % .-target .-value)])}]]
+                       :value @(re/subscribe [[:fields :login-page :username]])
+                       :on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])}]]
           [:p [:input {:name "password" 
                        :placeholder "password" :type "password" 
-                       :value @(re/subscribe [:login-page-password])
-                       :on-change #(re/dispatch [:login-page-password (-> % .-target .-value)])}]]
+                       :value @(re/subscribe [[:fields :login-page :password]])
+                       :on-change #(re/dispatch [[:fields :login-page :password] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])
