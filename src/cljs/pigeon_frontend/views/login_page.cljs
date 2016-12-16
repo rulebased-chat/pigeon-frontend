@@ -23,8 +23,8 @@
 (defn login-user [response]
   (.preventDefault response)
   (POST (get-context-path "/api/v0/session")
-    {:params {:username (get-in @app [:fields :login-page :username])
-              :password (get-in @app [:fields :login-page :password])}
+    {:params {:username @(re/subscribe [[:fields :login-page :username]])
+              :password @(re/subscribe [[:fields :login-page :password]])}
      :handler login-successful
      :error-handler error-handler
      :response-format :json

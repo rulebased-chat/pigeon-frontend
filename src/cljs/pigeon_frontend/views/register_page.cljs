@@ -14,8 +14,8 @@
 
 (defn login-user [response]
   (POST (get-context-path "/api/v0/session")
-    {:params {:username (get-in @app [:fields :register-page :username])
-              :password (get-in @app [:fields :register-page :password])}
+    {:params {:username @(re/subscribe [[:fields :register-page :username]])
+              :password @(re/subscribe [[:fields :register-page :password]])}
      :handler login-successful
      :error-handler error-handler
      :response-format :json
@@ -24,9 +24,9 @@
 (defn register-user [event]
   (.preventDefault event)
   (let [response (PUT (get-context-path "/api/v0/user")
-        {:params {:username (get-in @app [:fields :register-page :username])
-                  :password (get-in @app [:fields :register-page :password])
-                  :full_name (get-in @app [:fields :register-page :full-name])}
+        {:params {:username @(re/subscribe [[:fields :register-page :username]])
+                  :password @(re/subscribe [[:fields :register-page :password]])
+                  :full_name @(re/subscribe [[:fields :register-page :full-name]])}
          :handler login-user
          :error-handler error-handler})]))
 
