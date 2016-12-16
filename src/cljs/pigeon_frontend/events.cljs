@@ -35,6 +35,13 @@
   (fn [db [_ value]]
     (assoc-in db [:fields :register-page :full-name] value)))
 
+;; rooms page
+
+(re/reg-event-db
+  [:data :rooms]
+  (fn [db [_ value]]
+    (assoc-in db [:data :rooms] value)))
+
 ;; room create page
 
 (re/reg-event-db

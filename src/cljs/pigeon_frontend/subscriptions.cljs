@@ -30,6 +30,13 @@
   (fn [db _]
     (get-in db [:fields :register-page :full-name])))
 
+;; rooms page
+
+(re/reg-sub
+  [:data :rooms]
+  (fn [db _]
+    (get-in db [:data :rooms])))
+
 ;; room create page
 
 (re/reg-sub

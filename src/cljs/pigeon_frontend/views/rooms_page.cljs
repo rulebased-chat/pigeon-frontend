@@ -12,9 +12,6 @@
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]))
 
-(defn set-rooms [response]
-  (swap! app assoc-in [:data :rooms] response))
-
 (defn join-room [event data]
   (.preventDefault event)
   (let [response (POST (get-context-path "/api/v0/participant")
@@ -27,7 +24,7 @@
 
 (defn rooms-page []
   (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
-                           {:handler set-rooms
+                           {:handler #(re/dispatch [[:data :rooms] %])
                             :error-handler error-handler
                             :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
                             :response-format :json
@@ -47,7 +44,7 @@
                       [:th "Name"]
                       [:th]]]
                   [:tbody
-                    (for [room (get-in @app [:data :rooms])]
+                    (for [room @(re/subscribe [[:data :rooms]])]
                       ^{:key room}
                       [:tr [:td (:name room)]
                            [:td [:form {:on-submit #(join-room % {:room_id (:id room)
