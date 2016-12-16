@@ -29,7 +29,7 @@
                             :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
                             :response-format :json
                             :keywords? true}))]
-    (get-rooms)
+    (get-rooms) ;; todo: re/dispatch
     (fn []
       [layout/layout
         "Rooms"
