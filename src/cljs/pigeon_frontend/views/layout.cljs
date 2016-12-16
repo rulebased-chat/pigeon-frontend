@@ -12,9 +12,6 @@
   (clear! local-storage)
   (accountant/navigate! "/"))
 
-(defn close-error [error]
-  (swap! app update-in [:errors] disj error))
-
 (defn layout [header lead-text & body]
   (fn [header lead-text & body]
     [:div
@@ -31,9 +28,12 @@
         [:h2 header]
         [:p.lead lead-text]]
       [:div.container-fluid
-        (for [error (get-in @app [:errors])]
+        (for [error @(re/subscribe [:errors])]
           ^{:key error}
           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
             [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-            [:button.close {:type "button" :data-dismiss "alert" :aria-label "Close" :on-click #(close-error error)} "x"]])
+            [:button.close {:type "button"
+                            :data-dismiss "alert"
+                            :aria-label "Close"
+                            :on-click #(re/dispatch [:remove-error error])} "x"]])
         body]]))

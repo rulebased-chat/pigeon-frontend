@@ -53,3 +53,10 @@
   :session-username
   (fn [db _]
     (get-in db [:session :username])))
+
+;; errors
+
+(re/reg-sub
+  :errors
+  (fn [db _]
+    (get-in db [:errors])))
