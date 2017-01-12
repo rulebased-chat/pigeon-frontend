@@ -115,6 +115,17 @@
     db))
 
 (re/reg-event-db
+  [:get-rooms]
+  (fn [db [_ value]]
+    (GET (get-context-path "/api/v0/room")
+      {:handler #(re/dispatch [[:data :rooms] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
+    db))
+
+(re/reg-event-db
   [:data :rooms]
   (fn [db [_ value]]
     (assoc-in db [:data :rooms] value)))

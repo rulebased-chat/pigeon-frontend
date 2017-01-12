@@ -17,31 +17,25 @@
   (re/dispatch [[:rooms-page :join-room] data]))
 
 (defn rooms-page []
-  (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
-                           {:handler #(re/dispatch [[:data :rooms] %])
-                            :error-handler error-handler
-                            :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
-                            :response-format :json
-                            :keywords? true}))]
-    (get-rooms) ;; todo: re/dispatch
-    (fn []
-      [layout/layout
-        "Rooms"
-        "Join a room and start a rule-based conversation with your friends or co-workers"
-        [:div.container-fluid
-          [:p [:a.btn.btn-lg.btn-outline-primary {:href "/room"} "Create a room"]]
-          [:div.row
-              [:div.col-sm-12
-                [:table.table.table-striped
-                  [:thead
-                    [:tr
-                      [:th "Name"]
-                      [:th]]]
-                  [:tbody
-                    (for [room @(re/subscribe [[:data :rooms]])]
-                      ^{:key room}
-                      [:tr [:td (:name room)]
-                           [:td [:form {:on-submit #(join-room % {:room_id (:id room)
-                                                                  :username @(re/subscribe [:session-username])
-                                                                  :name @(re/subscribe [:session-username])})}
-                                  [:button.btn.btn-outline-success.btn-sm {:type "submit"} "Join room"]]]])]]]]]])))
+  (re/dispatch [[:get-rooms]])
+  (fn []
+    [layout/layout
+     "Rooms"
+     "Join a room and start a rule-based conversation with your friends or co-workers"
+     [:div.container-fluid
+      [:p [:a.btn.btn-lg.btn-outline-primary {:href "/room"} "Create a room"]]
+      [:div.row
+       [:div.col-sm-12
+        [:table.table.table-striped
+         [:thead
+          [:tr
+           [:th "Name"]
+           [:th]]]
+         [:tbody
+          (for [room @(re/subscribe [[:data :rooms]])]
+            ^{:key room}
+            [:tr [:td (:name room)]
+             [:td [:form {:on-submit #(join-room % {:room_id (:id room)
+                                                    :username @(re/subscribe [:session-username])
+                                                    :name @(re/subscribe [:session-username])})}
+                   [:button.btn.btn-outline-success.btn-sm {:type "submit"} "Join room"]]]])]]]]]]))
