@@ -6,7 +6,7 @@
             [secretary.core :as secretary :include-macros true]
             [pigeon-frontend.views.rooms-page :refer [rooms-page]]
             [accountant.core :as accountant]
-            [ajax.core :refer [GET POST PUT DELETE]]
+            [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.context :refer [get-context-path]]))
 
 (re/reg-event-db
@@ -25,7 +25,64 @@
   (fn [db [_ value]]
     (assoc-in db [:fields :login-page :password] value)))
 
+;; handlers
+
+(re/reg-event-db
+  [:login :error-handler] ;; todo: change to [:error-handler]
+  (fn [db [_ value]]
+    (let [{:keys [status status-text] :as response} value]
+      (re/dispatch [:add-error response])
+      (.log js/console "Bad response" (str response)))
+    db))
+
+(re/reg-event-db
+  [:login :success-handler]
+  (fn [db [_ value]]
+    (let [response value]
+      ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
+      (re/dispatch [:login (:session response)])
+      (assoc! local-storage :session (:session response))
+      ;; todo: these should really be added through add-watch
+      (session/put! :current-page #'rooms-page)
+      (accountant/navigate! "/rooms"))
+    db))
+
+(re/reg-event-db
+  [:login :session-handler]
+  (fn [db [_ value]]
+    (let [response value]
+      ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
+      (assoc! local-storage :session (:session response))
+      ;; todo: these should really be added through add-watch
+      (session/put! :current-page #'rooms-page)
+      (accountant/navigate! "/rooms"))
+    db))
+
+(re/reg-event-db
+  [:register-user :success-handler]
+  (fn [db [_ response]]
+    (POST (get-context-path "/api/v0/session")
+      {:params {:username @(re/subscribe [[:fields :register-page :username]])
+                :password @(re/subscribe [[:fields :register-page :password]])}
+      :handler #(re/dispatch [[:login :session-handler] %1])
+      :error-handler #(re/dispatch [[:login :error-handler] %1])
+       :response-format :json
+       :keywords? true})
+    db))
+
 ;; register page
+
+(re/reg-event-db
+  [:register-user]
+  (fn [db [_ value]]
+    (let [response value]
+      (PUT (get-context-path "/api/v0/user")
+        {:params {:username @(re/subscribe [[:fields :register-page :username]])
+                  :password @(re/subscribe [[:fields :register-page :password]])
+                  :full_name @(re/subscribe [[:fields :register-page :full-name]])}
+         :handler #(re/dispatch [[:register-user :success-handler] %1])
+         :error-handler #(re/dispatch [[:login :error-handler] %1])}))
+    db))
 
 (re/reg-event-db
   [:fields :register-page :username]
@@ -42,26 +99,6 @@
   (fn [db [_ value]]
     (assoc-in db [:fields :register-page :full-name] value)))
 
-;; handlers
-
-(re/reg-event-db
-  [:login :success-handler]
-  (fn [db [_ value]]
-    (let [response value]
-      ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
-      (re/dispatch [:login (:session response)])
-      (assoc! local-storage :session (:session response))
-      ;; todo: these should really be added through add-watch
-      (session/put! :current-page #'rooms-page)
-      (accountant/navigate! "/rooms"))))
-
-(re/reg-event-db
-  [:login :error-handler]
-  (fn [db [_ value]]
-    (let [{:keys [status status-text] :as response} value]
-      (re/dispatch [:add-error response])
-      (.log js/console "Bad response" (str response)))))
-
 ;; rooms page
 
 (re/reg-event-db
@@ -73,12 +110,25 @@
       :handler #(re/dispatch [[:login :success-handler] %1])
       :error-handler #(re/dispatch [[:login :error-handler] %1])
       :response-format :json
-      :keywords? true})))
+      :keywords? true})
+    db))
 
 (re/reg-event-db
   [:data :rooms]
   (fn [db [_ value]]
     (assoc-in db [:data :rooms] value)))
+
+(re/reg-event-db
+  [:rooms-page :join-room]
+  (fn [db [_ data]]
+    (POST (get-context-path "/api/v0/participant")
+      {:headers         {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :params          data
+       ;;:handler login-user ;; TODO: set current room as joined
+       :error-handler   #(re/dispatch [[:login :error-handler] %1])
+       :format          (json-request-format)
+       :response-format (json-response-format {:keywords? true})})
+    db))
 
 ;; room create page
 

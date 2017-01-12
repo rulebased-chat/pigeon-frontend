@@ -12,23 +12,9 @@
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
               [re-frame.core :as re]))
 
-(defn login-user [response]
-  (POST (get-context-path "/api/v0/session")
-    {:params {:username @(re/subscribe [[:fields :register-page :username]])
-              :password @(re/subscribe [[:fields :register-page :password]])}
-     :handler login-successful
-     :error-handler error-handler
-     :response-format :json
-     :keywords? true}))
-
 (defn register-user [event]
   (.preventDefault event)
-  (let [response (PUT (get-context-path "/api/v0/user")
-        {:params {:username @(re/subscribe [[:fields :register-page :username]])
-                  :password @(re/subscribe [[:fields :register-page :password]])
-                  :full_name @(re/subscribe [[:fields :register-page :full-name]])}
-         :handler login-user
-         :error-handler error-handler})]))
+  (re/dispatch [[:register-user]]))
 
 (defn register-page []
   [layout/layout "Sign up"

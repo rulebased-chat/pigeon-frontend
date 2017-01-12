@@ -14,13 +14,7 @@
 
 (defn join-room [event data]
   (.preventDefault event)
-  (let [response (POST (get-context-path "/api/v0/participant")
-                   {:headers         {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
-                    :params          data
-                    ;;:handler login-user ;; TODO: set current room as joined
-                    :error-handler   error-handler
-                    :format          (json-request-format)
-                    :response-format (json-response-format {:keywords? true})})]))
+  (re/dispatch [[:rooms-page :join-room] data]))
 
 (defn rooms-page []
   (let [get-rooms (fn [] (GET (get-context-path "/api/v0/room")
