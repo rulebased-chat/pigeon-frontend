@@ -11,17 +11,9 @@
               [pigeon-frontend.views.login-page :refer [login-page]]
               [re-frame.core :as re]))
 
-(defn redirect-upon-success []
-  (session/put! :current-page #'login-page)
-  (accountant/navigate! "/rooms"))
-
 (defn create-room [event]
   (.preventDefault event)
-  (let [response (POST (get-context-path "/api/v0/room")
-        {:params {:name @(re/subscribe [[:fields :room-create-page :name]])}
-         :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
-         :handler redirect-upon-success
-         :error-handler error-handler})]))
+  (re/dispatch [[:create-room]]))
 
 (defn room-create-page []
   [layout/layout "New room"

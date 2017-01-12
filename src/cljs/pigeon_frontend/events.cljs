@@ -7,7 +7,8 @@
             [pigeon-frontend.views.rooms-page :refer [rooms-page]]
             [accountant.core :as accountant]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
-            [pigeon-frontend.context :refer [get-context-path]]))
+            [pigeon-frontend.context :refer [get-context-path]]
+            [pigeon-frontend.views.login-page :refer [login-page]]))
 
 (re/reg-event-db
   :initialize
@@ -28,7 +29,7 @@
 ;; handlers
 
 (re/reg-event-db
-  [:login :error-handler] ;; todo: change to [:error-handler]
+  [:error-handler]
   (fn [db [_ value]]
     (let [{:keys [status status-text] :as response} value]
       (re/dispatch [:add-error response])
@@ -65,7 +66,7 @@
       {:params {:username @(re/subscribe [[:fields :register-page :username]])
                 :password @(re/subscribe [[:fields :register-page :password]])}
       :handler #(re/dispatch [[:login :session-handler] %1])
-      :error-handler #(re/dispatch [[:login :error-handler] %1])
+      :error-handler #(re/dispatch [[:error-handler] %1])
        :response-format :json
        :keywords? true})
     db))
@@ -81,7 +82,7 @@
                   :password @(re/subscribe [[:fields :register-page :password]])
                   :full_name @(re/subscribe [[:fields :register-page :full-name]])}
          :handler #(re/dispatch [[:register-user :success-handler] %1])
-         :error-handler #(re/dispatch [[:login :error-handler] %1])}))
+         :error-handler #(re/dispatch [[:error-handler] %1])}))
     db))
 
 (re/reg-event-db
@@ -108,7 +109,7 @@
       {:params {:username @(re/subscribe [[:fields :login-page :username]])
       :password @(re/subscribe [[:fields :login-page :password]])}
       :handler #(re/dispatch [[:login :success-handler] %1])
-      :error-handler #(re/dispatch [[:login :error-handler] %1])
+      :error-handler #(re/dispatch [[:error-handler] %1])
       :response-format :json
       :keywords? true})
     db))
@@ -125,12 +126,29 @@
       {:headers         {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
        :params          data
        ;;:handler login-user ;; TODO: set current room as joined
-       :error-handler   #(re/dispatch [[:login :error-handler] %1])
+       :error-handler   #(re/dispatch [[:error-handler] %1])
        :format          (json-request-format)
        :response-format (json-response-format {:keywords? true})})
     db))
 
 ;; room create page
+
+(re/reg-event-db
+  [:redirect-to-login]
+  (fn [db [_ data]]
+    (session/put! :current-page #'login-page)
+    (accountant/navigate! "/rooms")
+    db))
+
+(re/reg-event-db
+  [:create-room]
+  (fn [db [_ data]]
+    (POST (get-context-path "/api/v0/room")
+      {:params {:name @(re/subscribe [[:fields :room-create-page :name]])}
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :handler #(re/dispatch [[:redirect-to-login] %1])
+       :error-handler #(re/dispatch [[:error-handler] %1])})
+    db))
 
 (re/reg-event-db
   [:fields :room-create-page :name]

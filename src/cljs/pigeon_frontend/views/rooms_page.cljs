@@ -4,7 +4,7 @@
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
             [pigeon-frontend.views.layout :as layout]
-            [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
+              [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.ajax :refer [error-handler]]
             [pigeon-frontend.context :refer [get-context-path]]
             [pigeon-frontend.view-model :refer [app]]
