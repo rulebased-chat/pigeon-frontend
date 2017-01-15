@@ -1,18 +1,16 @@
 (ns pigeon-frontend.views.layout
-    (:require [reagent.core :as reagent :refer [atom]]
-              [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
-              [accountant.core :as accountant]
-              [pigeon-frontend.view-model :refer [app]]
-              [hodgepodge.core :refer [local-storage clear!]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [reagent.session :as session]
+            [secretary.core :as secretary :include-macros true]
+            [accountant.core :as accountant]
+            [pigeon-frontend.view-model :refer [app]]
+            [hodgepodge.core :refer [local-storage clear!]]
+            [re-frame.core :as re]))
 
 (defn logout [_]
-  (swap! app assoc-in [:session] nil)
+  (re/dispatch [:logout])
   (clear! local-storage)
   (accountant/navigate! "/"))
-
-(defn close-error [error]
-  (swap! app update-in [:errors] disj error))
 
 (defn layout [header lead-text & body]
   (fn [header lead-text & body]
@@ -20,7 +18,7 @@
       [:link {:rel "stylesheet" :type "text/css" :href "assets/bootstrap/css/bootstrap.css"}]
       [:div.navbar.navbar-light.bg-faded
         [:a.navbar-brand {:href "/"} "pigeon-frontend"]
-        (if-let [logged-in? (get-in @app [:session :token])]
+        (if-let [logged-in? @(re/subscribe [:session-token])]
           [:div.pull-xs-right
             [:button.btn.btn-info {:on-click logout} "Log out"]]
           [:div.pull-xs-right
@@ -30,9 +28,12 @@
         [:h2 header]
         [:p.lead lead-text]]
       [:div.container-fluid
-        (for [error (get-in @app [:errors])]
+        (for [error @(re/subscribe [:errors])]
           ^{:key error}
           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
             [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-            [:button.close {:type "button" :data-dismiss "alert" :aria-label "Close" :on-click #(close-error error)} "x"]])
+            [:button.close {:type "button"
+                            :data-dismiss "alert"
+                            :aria-label "Close"
+                            :on-click #(re/dispatch [:remove-error error])} "x"]])
         body]]))

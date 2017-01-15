@@ -9,25 +9,12 @@
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
               [pigeon-frontend.views.login-page :refer [login-successful]]
-              [pigeon-frontend.views.rooms-page :refer [rooms-page]]))
-
-(defn login-user [response]
-  (POST (get-context-path "/api/v0/session")
-    {:params {:username (get-in @app [:fields :register-page :username])
-              :password (get-in @app [:fields :register-page :password])}
-     :handler login-successful
-     :error-handler error-handler
-     :response-format :json
-     :keywords? true}))
+              [pigeon-frontend.views.rooms-page :refer [rooms-page]]
+              [re-frame.core :as re]))
 
 (defn register-user [event]
   (.preventDefault event)
-  (let [response (PUT (get-context-path "/api/v0/user")
-        {:params {:username (get-in @app [:fields :register-page :username])
-                  :password (get-in @app [:fields :register-page :password])
-                  :full_name (get-in @app [:fields :register-page :full-name])}
-         :handler login-user
-         :error-handler error-handler})]))
+  (re/dispatch [[:register-user]]))
 
 (defn register-page []
   [layout/layout "Sign up"
@@ -37,14 +24,14 @@
         [:form {:on-submit register-user}
           [:p [:input {:name "username" 
                        :placeholder "username" 
-                       :value (get-in @app [:fields :register-page :username]) 
-                       :on-change #(swap! app assoc-in [:fields :register-page :username] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [[:fields :register-page :username]])
+                       :on-change #(re/dispatch [[:fields :register-page :username] (-> % .-target .-value)])}]]
           [:p [:input {:name "password" 
                        :placeholder "password" :type "password" 
-                       :value (get-in @app [:fields :register-page :password]) 
-                       :on-change #(swap! app assoc-in [:fields :register-page :password] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [[:fields :register-page :password]])
+                       :on-change #(re/dispatch [[:fields :register-page :password] (-> % .-target .-value)])}]]
           [:p [:input {:name "full_name" 
                        :placeholder "full_name" 
-                       :value (get-in @app [:fields :register-page :full-name]) 
-                       :on-change #(swap! app assoc-in [:fields :register-page :full-name] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [[:fields :register-page :full-name]])
+                       :on-change #(re/dispatch [[:fields :register-page :full-name] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

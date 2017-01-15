@@ -10,7 +10,10 @@
               [pigeon-frontend.views.home-page :refer [home-page]]
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
               [pigeon-frontend.views.room-create-page :refer [room-create-page]]
-              [pigeon-frontend.view-model :refer [app]]))
+              [pigeon-frontend.view-model :refer [app]]
+              [re-frame.core :as re]
+              [pigeon-frontend.events]
+              [pigeon-frontend.subscriptions]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -51,5 +54,6 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (swap! app assoc-in [:session] session)
+  (re/dispatch-sync [:initialize])
+  (re/dispatch-sync [:login session])
   (init!))

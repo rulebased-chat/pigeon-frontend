@@ -5,12 +5,13 @@
               [accountant.core :as accountant]
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
-              [pigeon-frontend.view-model :refer [app]]))
+              [pigeon-frontend.view-model :refer [app]]
+              [re-frame.core :as re]))
 
 (defn handler [response]
   (.log js/console (str response)))
 
 ;; TODO: handle errors with defmulti based on http statuses
 (defn error-handler [{:keys [status status-text] :as response}]
-  (swap! app update-in [:errors] conj response)
+  (re/dispatch [:add-error response])
   (.log js/console "Bad response" (str response)))

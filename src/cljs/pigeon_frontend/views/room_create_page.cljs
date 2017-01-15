@@ -8,19 +8,12 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.views.login-page :refer [login-page]]))
-
-(defn redirect-upon-success []
-  (session/put! :current-page #'login-page)
-  (accountant/navigate! "/rooms"))
+              [pigeon-frontend.views.login-page :refer [login-page]]
+              [re-frame.core :as re]))
 
 (defn create-room [event]
   (.preventDefault event)
-  (let [response (POST (get-context-path "/api/v0/room")
-        {:params {:name (get-in @app [:fields :room-create-page :name])}
-         :headers {:authorization (str "Bearer " (get-in @app [:session :token]))}
-         :handler redirect-upon-success
-         :error-handler error-handler})]))
+  (re/dispatch [[:create-room]]))
 
 (defn room-create-page []
   [layout/layout "New room"
@@ -30,6 +23,6 @@
         [:form {:on-submit create-room}
           [:p [:input {:name "name"
                        :placeholder "name"
-                       :value (get-in @app [:fields :room-create-page :name])
-                       :on-change #(swap! app assoc-in [:fields :room-create-page :name] (-> % .-target .-value))}]]
+                       :value @(re/subscribe [[:fields :room-create-page :name]])
+                       :on-change #(re/dispatch [[:fields :room-create-page :name] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])
