@@ -17,7 +17,7 @@
   (re/dispatch [[:rooms-page :join-room] data]))
 
 (defn rooms-page []
-  (re/dispatch [[:get-rooms]])
+  (re/dispatch [[:get-rooms] {:username @(re/subscribe [:session-username])}])
   (fn []
     [layout/layout
      "Rooms"
@@ -35,7 +35,10 @@
           (for [room @(re/subscribe [[:data :rooms]])]
             ^{:key room}
             [:tr [:td (:name room)]
-             [:td [:form {:on-submit #(join-room % {:room_id (:id room)
-                                                    :username @(re/subscribe [:session-username])
-                                                    :name @(re/subscribe [:session-username])})}
-                   [:button.btn.btn-outline-success.btn-sm {:type "submit"} "Join room"]]]])]]]]]]))
+             [:td (if (:joined room)
+                    [:button.btn.btn-success.btn-sm {:type "button" :disabled true} "Joined"]
+                    [:form {:on-submit #(join-room % {:room_id (:id room)
+                                                      :username @(re/subscribe [:session-username])
+                                                      :name @(re/subscribe [:session-username])})}
+                     [:button.btn.btn-outline-success.btn-sm {:type "submit"} "Join room"]])
+                  ]])]]]]]]))
