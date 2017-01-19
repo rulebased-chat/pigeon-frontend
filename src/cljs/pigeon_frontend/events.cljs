@@ -116,9 +116,11 @@
 
 (re/reg-event-db
   [:get-rooms]
-  (fn [db [_ value]]
+  (fn [db [_ data]]
     (GET (get-context-path "/api/v0/room")
-      {:handler #(re/dispatch [[:data :rooms] %])
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :rooms] %])
        :error-handler #(re/dispatch [[:error-handler] %1])
        :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
        :response-format :json
