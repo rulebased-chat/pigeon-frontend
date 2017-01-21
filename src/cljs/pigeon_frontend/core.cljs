@@ -10,6 +10,7 @@
               [pigeon-frontend.views.home-page :refer [home-page]]
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
               [pigeon-frontend.views.room-create-page :refer [room-create-page]]
+              [pigeon-frontend.views.room-page :refer [room-page]]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
@@ -35,6 +36,9 @@
 
 (secretary/defroute "/room" []
   (session/put! :current-page #'room-create-page))
+
+(secretary/defroute "/room/:id" {:as params} ;; todo: add id handling
+  (session/put! :current-page #'room-page))
 
 ;; -------------------------
 ;; Initialize app

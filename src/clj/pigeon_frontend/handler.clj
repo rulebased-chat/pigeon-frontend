@@ -33,6 +33,7 @@
   (GET "/login" [] (loading-page))
   (GET "/rooms" [] (loading-page))
   (GET "/room" [] (loading-page))
+  (GET "/room/:id" [_] (loading-page))
   
   (resources "/")
   (not-found "Not Found"))
