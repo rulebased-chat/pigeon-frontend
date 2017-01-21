@@ -16,8 +16,6 @@
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
   (re/dispatch [:login (:session response)])
   (assoc! local-storage :session (:session response))
-  ;; todo: these should really be added through add-watch
-  (session/put! :current-page #'rooms-page)
   (accountant/navigate! "/rooms"))
 
 (defn login-user [response]

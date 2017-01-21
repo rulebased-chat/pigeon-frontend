@@ -43,8 +43,6 @@
       ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
       (re/dispatch [:login (:session response)])
       (assoc! local-storage :session (:session response))
-      ;; todo: these should really be added through add-watch
-      (session/put! :current-page #'rooms-page)
       (accountant/navigate! "/rooms"))
     db))
 
@@ -54,8 +52,6 @@
     (let [response value]
       ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
       (assoc! local-storage :session (:session response))
-      ;; todo: these should really be added through add-watch
-      (session/put! :current-page #'rooms-page)
       (accountant/navigate! "/rooms"))
     db))
 
@@ -149,7 +145,6 @@
 (re/reg-event-db
   [:redirect-to-login]
   (fn [db [_ data]]
-    (session/put! :current-page #'login-page)
     (accountant/navigate! "/rooms")
     db))
 
