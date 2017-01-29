@@ -34,23 +34,15 @@
          [:li.p-1 "Link"]
          ]]]
       [:div.col-sm-8.col-md-10.p-0
-        [:div.col.col-md-12 {:style {:height "calc(90vh - 55px)" :overflow "auto"}}
-         [:p "Hello world!"]
-         [:p "Cool!"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         [:p "Message"]
-         ]
+        [:div.col.col-md-12.p-1 {:style {:height "calc(90vh - 55px)" :overflow "auto"}}
+         [:div.col.col-md-6.p-0
+          [:p
+           [:p.mb-0 (take 5 (repeat "Hello world! "))]
+           [:small "olmorauno • 29.01.2017 14:37"]]]
+         [:div.col.col-md-6.p-0.offset-md-6
+          [:p
+           [:p.mb-0 (take 50 (repeat "ACK "))]
+           [:small "ilmoraunio • 29.01.2017 14:41"]]]]
         [:div.col.col-md-12.p-0 {:style {:height "calc(10vh - 55px)" :position "relative"}}
          [:textarea.w-100.p-1 {:type "text" :style {:height "calc(10vh - 3px)" :border "none" :resize "none"} :placeholder "Write a message"}]]
         ]
