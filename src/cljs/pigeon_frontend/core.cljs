@@ -17,7 +17,9 @@
               [pigeon-frontend.subscriptions]))
 
 (defn current-page []
-  [:div [(session/get :current-page)]])
+  (if (session/get :query-parameters)
+    [:div [((session/get :current-page) (session/get :query-parameters))]]
+    [:div [(session/get :current-page)]]))
 
 ;; -------------------------
 ;; Routes
