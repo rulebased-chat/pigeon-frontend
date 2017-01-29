@@ -17,22 +17,16 @@
      [:div.row.h-100
       [:div.col-sm-4.col-md-2.p-0.h-100
        [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
-        [:nav.nav
-         [:li.active.p-1 "One" [:span.tag.tag-pill.tag-primary.ml-1 1]]
-         [:li.p-1 "Two"]
-         [:li.p-1 [:a {:href "/room/1/recipient/foo"} "Three"]]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         [:li.p-1 "Link"]
-         ]]]
+        [:ul.list-group
+         [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/foo"
+                                                    :style {:border 0 :border-radius 0}}
+            "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
+         [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
+                                                    :style {:border 0 :border-radius 0}}
+            "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
+         [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
+                                                    :style {:border 0 :border-radius 0}}
+            "Three"]]]]
       [:div.col-sm-8.col-md-10.p-0
         [:div.col.col-md-12.p-1 {:style {:height "calc(90vh - 55px)" :overflow "auto"}}
          [:div.col.col-md-6.p-0
