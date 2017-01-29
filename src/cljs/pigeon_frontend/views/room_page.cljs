@@ -32,12 +32,12 @@
          [:div.col.col-md-6.p-0
           [:p
            [:p.mb-0 (take 5 (repeat "Hello world! "))]
-           [:small "olmorauno • 29.01.2017 14:37"]]]
+           [:small [:strong "olmorauno"]
+            [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]
          [:div.col.col-md-6.p-0.offset-md-6
           [:p
            [:p.mb-0 (take 50 (repeat "ACK "))]
-           [:small "ilmoraunio • 29.01.2017 14:41"]]]]
+           [:small [:strong "ilmoraunio"]
+                   [:span.text-muted.ml-1 "29.01.2017 14:41"]]]]]
         [:div.col.col-md-12.p-0 {:style {:height "calc(10vh - 55px)" :position "relative"}}
-         [:textarea.w-100.p-1 {:type "text" :style {:height "calc(10vh - 3px)" :border "none" :resize "none"} :placeholder "Write a message"}]]
-        ]
-      ]])
+         [:textarea.w-100.p-1 {:type "text" :style {:height "calc(10vh - 3px)" :border "none" :resize "none"} :placeholder "Write a message"}]]]]])
