@@ -43,13 +43,15 @@
     [:div {:style {:height "100vh"}}
      [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap-flex.css"}]
      [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
-      [:a.navbar-brand {:href "/"} "pigeon-frontend"]
+      [:a.navbar-brand.hidden-xs-down {:href "/"} "pigeon-frontend"]
+      [:div.float-xs-left
+       [:a.btn.btn-info.text-white.hidden-sm-up "☰"]]
       (if-let [logged-in? @(re/subscribe [:session-token])]
-        [:div.pull-xs-right
-         [:button.btn.btn-info {:on-click logout} "Log out"]]
-        [:div.pull-xs-right
+        [:div.float-xs-right
          [:small.m-r-1 [:a {:href "/login"} "Log in"]]
-         [:a.btn.btn-info {:href "/register"} "Sign up"]])]
+         [:a.btn.btn-info {:href "/register"} "Sign up"]]
+        [:div.float-xs-right
+         [:button.btn.btn-info {:on-click logout} "Log out"]])]
      [:div.container-fluid {:style {:height "calc(100vh - 55px)"}}
       (for [error @(re/subscribe [:errors])]
         ^{:key error}

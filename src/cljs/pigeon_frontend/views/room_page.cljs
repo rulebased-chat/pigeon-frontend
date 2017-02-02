@@ -25,7 +25,7 @@
 (defn room-page []
   [layout/chat-layout
      [:div.row.h-100
-      [:div.col-sm-4.col-md-2.p-0.h-100
+      [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
        [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
         [:ul.list-group
          [:a.list-group-item.active.text-justify.bg-faded {:href "/room/1/user/foo"
@@ -40,7 +40,7 @@
       [:div.col-sm-8.col-md-10.p-0
         [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                          :height (str "calc(100vh - " header-height ")")}}
-         [:div.p-1
+         [:div#messages.p-1
           [:div.col.col-md-6.p-0
            [:p
             [:p.mb-0 (take 5 (repeat "Hello world! "))]
@@ -56,9 +56,8 @@
                              [:p.mb-0 (take 5 (repeat "Hello world! "))]
                              [:small [:strong "olmorauno"]
                               [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]))]
-         [:div.col.col-md-12.bg-faded.p-1.input-group {:id "scrollable_end"
-                                                       :style {:border-top "1px solid #d9d9d9"
-                                                               :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
+         [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style {:border-top "1px solid #d9d9d9"
+                                                                          :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
           [:textarea.w-100.rounded-left {:type "text"
                                          :rows "1"
                                          :style {:border "1px solid #d9d9d9" :resize "none"}
