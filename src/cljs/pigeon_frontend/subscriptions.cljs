@@ -46,15 +46,18 @@
 
 ;; room page
 
+(defn get-navbar-mobile-collapsed [db]
+  (get-in db [:navbar-mobile :collapsed]))
+
 (re/reg-sub
   [:navbar-mobile :collapsed]
   (fn [db _]
-    (get-in db [:navbar-mobile :collapsed])))
+    (get-navbar-mobile-collapsed db)))
 
 (re/reg-sub
   [:navbar-mobile :display]
   (fn [db _]
-    (if-let [collapsed? (get-in db [:navbar-mobile :collapsed])]
+    (if-let [collapsed? (get-navbar-mobile-collapsed db)]
       "none"
       "block")))
 
