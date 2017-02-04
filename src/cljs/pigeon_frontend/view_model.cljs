@@ -12,4 +12,5 @@
               :rooms-page {}
               :room-create-page {:name ""}}
      :data {:rooms [{:name "placeholder room"}]}
+     :navbar-mobile {:collapsed true}
      :errors #{}}))

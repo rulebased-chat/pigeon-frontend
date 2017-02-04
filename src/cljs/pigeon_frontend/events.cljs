@@ -163,6 +163,13 @@
   (fn [db [_ value]]
     (assoc-in db [:fields :room-create-page :name] value)))
 
+;; room page
+
+(re/reg-event-db
+  [:navbar-mobile :collapsed]
+  (fn [db [_ value]]
+    (assoc-in db [:navbar-mobile :collapsed] (not value))))
+
 ;; session
 
 (re/reg-event-db

@@ -44,6 +44,20 @@
   (fn [db _]
     (get-in db [:fields :room-create-page :name])))
 
+;; room page
+
+(re/reg-sub
+  [:navbar-mobile :collapsed]
+  (fn [db _]
+    (get-in db [:navbar-mobile :collapsed])))
+
+(re/reg-sub
+  [:navbar-mobile :display]
+  (fn [db _]
+    (if-let [collapsed? (get-in db [:navbar-mobile :collapsed])]
+      "none"
+      "block")))
+
 ;; session
 
 (re/reg-sub

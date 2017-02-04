@@ -32,7 +32,8 @@
     [navbar-entries]]])
 
 (defn navbar-mobile []
-  [:div.col-xs-12.p-0.hidden-sm-up {:style {:height (str "calc(100vh - " header-height ")")
+  [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
+                                            :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
                                             :z-index "1000"}}
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
