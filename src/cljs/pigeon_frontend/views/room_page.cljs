@@ -16,6 +16,9 @@
 
 (defn navbar-entries []
   [:ul.list-group
+   [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
+                                              :style {:border 0 :border-radius 0}}
+    "Go back"]
    [:a.list-group-item.active.text-justify.bg-faded {:href "/room/1/user/foo"
                                                      :style {:border 0 :border-radius 0}}
     "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
