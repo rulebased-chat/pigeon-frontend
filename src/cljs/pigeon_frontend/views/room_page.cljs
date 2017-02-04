@@ -14,29 +14,35 @@
 
 (def ^:private header-height "55px")
 
-(defn determine-height-for-chatbox [textarea]
-  (let [newlines (count (re-seq #"\n" (-> textarea .-value)))
-        rows-caps 2
-        rows (cond
-               (>= 0 newlines 1) (+ newlines 1)
-               (>= newlines rows-caps) 3)]
-    (print rows)))
+(defn navbar-entries []
+  [:ul.list-group
+   [:a.list-group-item.active.text-justify.bg-faded {:href "/room/1/user/foo"
+                                                     :style {:border 0 :border-radius 0}}
+    "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
+   [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
+                                              :style {:border 0 :border-radius 0}}
+    "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
+   [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
+                                              :style {:border 0 :border-radius 0}}
+    "Three"]])
+
+(defn navbar []
+  [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
+   [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
+    [navbar-entries]]])
+
+(defn navbar-mobile []
+  [:div.col-xs-12.p-0.hidden-sm-up {:style {:height (str "calc(100vh - " header-height ")")
+                                            :position "absolute"
+                                            :z-index "1000"}}
+   [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
+    [navbar-entries]]])
 
 (defn room-page []
   [layout/chat-layout
      [:div.row.h-100
-      [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
-       [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
-        [:ul.list-group
-         [:a.list-group-item.active.text-justify.bg-faded {:href "/room/1/user/foo"
-                                                    :style {:border 0 :border-radius 0}}
-            "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
-         [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
-                                                    :style {:border 0 :border-radius 0}}
-            "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
-         [:a.list-group-item.text-justify.bg-faded {:href "/room/1/user/bar"
-                                                    :style {:border 0 :border-radius 0}}
-            "Three"]]]]
+      [navbar-mobile]
+      [navbar]
       [:div.col-sm-8.col-md-10.p-0
         [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                          :height (str "calc(100vh - " header-height ")")}}
