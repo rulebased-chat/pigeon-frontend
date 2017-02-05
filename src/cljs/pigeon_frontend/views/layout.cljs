@@ -54,13 +54,4 @@
          [:a.btn.btn-info {:href "/register"} "Sign up"]]
         [:div.float-xs-right
          [:button.btn.btn-info {:on-click logout} "Log out"]])]
-     [:div.container-fluid {:style {:height "calc(100vh - 55px)"}}
-      (for [error @(re/subscribe [:errors])]
-        ^{:key error}
-        [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-         [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-         [:button.close {:type "button"
-                         :data-dismiss "alert"
-                         :aria-label "Close"
-                         :on-click #(re/dispatch [:remove-error error])} "x"]])
-      body]]))
+     [:div.container-fluid {:style {:height "calc(100vh - 55px)"}} body]]))
