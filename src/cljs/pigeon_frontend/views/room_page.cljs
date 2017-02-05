@@ -42,6 +42,15 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [navbar-entries]]])
 
+(defn chat-input []
+  [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style {:border-top "1px solid #d9d9d9"
+                                                                   :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
+   [:textarea.w-100.rounded-left {:type "text"
+                                  :rows "1"
+                                  :style {:border "1px solid #d9d9d9" :resize "none"}
+                                  :placeholder "Write a message"}]
+   [:span.input-group-addon.btn.btn-primary {:style {:min-height "2em"}} "Send"]])
+
 (defn room-page []
   [layout/chat-layout
      [:div.row.h-100
@@ -66,10 +75,4 @@
                              [:p.mb-0 (take 5 (repeat "Hello world! "))]
                              [:small [:strong "olmorauno"]
                               [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]))]
-         [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style {:border-top "1px solid #d9d9d9"
-                                                                          :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
-          [:textarea.w-100.rounded-left {:type "text"
-                                         :rows "1"
-                                         :style {:border "1px solid #d9d9d9" :resize "none"}
-                                         :placeholder "Write a message"}]
-          [:span.input-group-addon.btn.btn-primary {:style {:min-height "2em"}} "Send"]]]]]])
+         [chat-input]]]]])
