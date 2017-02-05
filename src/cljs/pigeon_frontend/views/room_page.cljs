@@ -46,9 +46,11 @@
   [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style {:border-top "1px solid #d9d9d9"
                                                                    :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
    [:textarea.w-100.rounded-left {:type "text"
-                                  :rows "1"
+                                  :rows @(re/subscribe [[:chat-input :rows]])
                                   :style {:border "1px solid #d9d9d9" :resize "none"}
-                                  :placeholder "Write a message"}]
+                                  :placeholder "Write a message"
+                                  :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
+    @(re/subscribe [[:chat-input :value]])]
    [:span.input-group-addon.btn.btn-primary {:style {:min-height "2em"}} "Send"]])
 
 (defn room-page []

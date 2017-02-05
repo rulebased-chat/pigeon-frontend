@@ -61,6 +61,23 @@
       "none"
       "block")))
 
+(defn get-chat-input-value [db]
+  (get-in db [:chat-input :value]))
+
+(re/reg-sub
+  [:chat-input :value]
+  (fn [db _]
+    (get-chat-input-value db)))
+
+(re/reg-sub
+  [:chat-input :rows]
+  (fn [db _]
+  (let [value (get-chat-input-value db)
+        rows (+ 1 (count (re-seq #"\n" value)))
+        rowcap 6
+        rows-or-rowcap (if (< rows rowcap) rows rowcap)]
+    rows-or-rowcap)))
+
 ;; session
 
 (re/reg-sub

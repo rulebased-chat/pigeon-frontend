@@ -170,6 +170,11 @@
   (fn [db [_ value]]
     (assoc-in db [:navbar-mobile :collapsed] (not value))))
 
+(re/reg-event-db
+  [:chat-input :value]
+  (fn [db [_ value]]
+    (assoc-in db [:chat-input :value] value)))
+
 ;; session
 
 (re/reg-event-db
