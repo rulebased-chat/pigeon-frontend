@@ -75,7 +75,7 @@
   (let [value (get-chat-input-value db)
         rows (count (re-seq #"\n" value))
         rowcap 6
-        line-height-in-pixels 12
+        line-height-in-pixels 18
         rows-or-rowcap (if (< rows rowcap) rows rowcap)]
     (* rows-or-rowcap line-height-in-pixels))))
 
