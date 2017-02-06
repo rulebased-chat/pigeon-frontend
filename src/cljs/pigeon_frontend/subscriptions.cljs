@@ -73,10 +73,11 @@
   [:chat-input :rows]
   (fn [db _]
   (let [value (get-chat-input-value db)
-        rows (+ 1 (count (re-seq #"\n" value)))
+        rows (count (re-seq #"\n" value))
         rowcap 6
+        line-height-in-pixels 12
         rows-or-rowcap (if (< rows rowcap) rows rowcap)]
-    rows-or-rowcap)))
+    (* rows-or-rowcap line-height-in-pixels))))
 
 ;; session
 

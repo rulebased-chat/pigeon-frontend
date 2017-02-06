@@ -31,7 +31,7 @@
 
 (defn navbar []
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
-   [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
+   [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
     [navbar-entries]]])
 
 (defn navbar-mobile []
@@ -42,16 +42,18 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [navbar-entries]]])
 
-(defn chat-input []
-  [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style {:border-top "1px solid #d9d9d9"
-                                                                   :box-shadow "0px 10000px 0px 10000px #f7f7f9"}}
+(defn chat-input [style-opts]
+  [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
+                                                                          :bottom "0px"
+                                                                          :border-top "1px solid #d9d9d9"
+                                                                          :box-shadow "0px 10000px 0px 10000px #f7f7f9"}
+                                                                         style-opts)}
    [:textarea.w-100.rounded-left {:type "text"
-                                  :rows @(re/subscribe [[:chat-input :rows]])
                                   :style {:border "1px solid #d9d9d9" :resize "none"}
                                   :placeholder "Write a message"
                                   :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
     @(re/subscribe [[:chat-input :value]])]
-   [:span.input-group-addon.btn.btn-primary {:style {:min-height "2em"}} "Send"]])
+   [:span.input-group-addon.btn.btn-primary "Send"]])
 
 (defn room-page []
   [layout/chat-layout
@@ -60,7 +62,7 @@
       [navbar]
       [:div.col-sm-8.col-md-10.p-0
         [:div.col.col-md-12.p-0 {:style {:overflow "auto"
-                                         :height (str "calc(100vh - " header-height ")")}}
+                                         :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
          [:div#messages.p-1
           ;; example
           ;; sent by someone else
@@ -94,5 +96,5 @@
            [:strong "Something went wrong"] (str " Please try again.")
            [:button.close {:type "button"
                            :data-dismiss "alert"
-                           :aria-label "Close"} "x"]]]
-         [chat-input]]]]])
+                           :aria-label "Close"} "x"]]]]
+       [chat-input {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])
