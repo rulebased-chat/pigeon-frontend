@@ -22,7 +22,7 @@
                  [ring/ring-anti-forgery "1.0.1"]
                  [cljs-ajax "0.5.8"]
                  [ring-webjars "0.1.1"]
-                 [org.webjars/bootstrap "4.0.0-alpha.3"]
+                 [org.webjars/bootstrap "4.0.0-alpha.5"]
                  [environ "1.1.0"]
                  [prismatic/dommy "1.1.0"]
                  [hodgepodge "0.1.3"]

@@ -44,6 +44,41 @@
   (fn [db _]
     (get-in db [:fields :room-create-page :name])))
 
+;; room page
+
+(defn get-navbar-mobile-collapsed [db]
+  (get-in db [:navbar-mobile :collapsed]))
+
+(re/reg-sub
+  [:navbar-mobile :collapsed]
+  (fn [db _]
+    (get-navbar-mobile-collapsed db)))
+
+(re/reg-sub
+  [:navbar-mobile :display]
+  (fn [db _]
+    (if-let [collapsed? (get-navbar-mobile-collapsed db)]
+      "none"
+      "block")))
+
+(defn get-chat-input-value [db]
+  (get-in db [:chat-input :value]))
+
+(re/reg-sub
+  [:chat-input :value]
+  (fn [db _]
+    (get-chat-input-value db)))
+
+(re/reg-sub
+  [:chat-input :rows]
+  (fn [db _]
+  (let [value (get-chat-input-value db)
+        rows (count (re-seq #"\n" value))
+        rowcap 6
+        line-height-in-pixels 18
+        rows-or-rowcap (if (< rows rowcap) rows rowcap)]
+    (* rows-or-rowcap line-height-in-pixels))))
+
 ;; session
 
 (re/reg-sub
