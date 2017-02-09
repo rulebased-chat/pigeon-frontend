@@ -39,8 +39,8 @@
 (secretary/defroute "/room" []
   (session/put! :current-page #'room-create-page))
 
-(secretary/defroute "/room/:id" {:as params} ;; todo: add id handling
-  (session/put! :current-page #'room-page))
+(secretary/defroute "/room/:id" {:as params}
+  (session/put! :current-page #(partial room-page (str "/room/" (:id params)))))
 
 ;; -------------------------
 ;; Initialize app
