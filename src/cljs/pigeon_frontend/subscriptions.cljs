@@ -61,6 +61,11 @@
       "none"
       "block")))
 
+(re/reg-sub
+  [:data :room :participants]
+  (fn [db _]
+    (get-in db [:data :room :participants])))
+
 (defn get-chat-input-value [db]
   (get-in db [:chat-input :value]))
 

@@ -40,7 +40,7 @@
   (session/put! :current-page #'room-create-page))
 
 (secretary/defroute "/room/:id" {:as params}
-  (session/put! :current-page #(partial room-page (str "/room/" (:id params)))))
+  (session/put! :current-page #(partial room-page params)))
 
 ;; -------------------------
 ;; Initialize app

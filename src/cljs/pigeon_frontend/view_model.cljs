@@ -11,7 +11,8 @@
                            :password ""}
               :rooms-page {}
               :room-create-page {:name ""}}
-     :data {:rooms [{:name "placeholder room"}]}
+     :data {:rooms [{:name "placeholder room"}]
+            :room {:participants []}}
      :navbar-mobile {:collapsed true}
      :chat-input {:value ""}
      :errors #{}}))
