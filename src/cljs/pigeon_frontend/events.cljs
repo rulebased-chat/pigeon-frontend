@@ -166,6 +166,24 @@
 ;; room page
 
 (re/reg-event-db
+  [:data :room :participants]
+  (fn [db [_ value]]
+    (assoc-in db [:data :room :participants] value)))
+
+(re/reg-event-db
+  [:get-participants]
+  (fn [db [_ data]]
+    (GET (get-context-path "/api/v0/participant")
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :room :participants] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
+    db))
+
+(re/reg-event-db
   [:navbar-mobile :collapsed]
   (fn [db [_ value]]
     (assoc-in db [:navbar-mobile :collapsed] (not value))))
