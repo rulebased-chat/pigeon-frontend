@@ -50,8 +50,8 @@
         "☰"]]
       (if-let [logged-in? @(re/subscribe [:session-token])]
         [:div.float-xs-right
-         [:small.m-r-1 [:a {:href "/login"} "Log in"]]
-         [:a.btn.btn-info {:href "/register"} "Sign up"]]
+         [:button.btn.btn-info {:on-click logout} "Log out"]]
         [:div.float-xs-right
-         [:button.btn.btn-info {:on-click logout} "Log out"]])]
+         [:small.m-r-1 [:a {:href "/login"} "Log in"]]
+         [:a.btn.btn-info {:href "/register"} "Sign up"]])]
      [:div.container-fluid {:style {:height "calc(100vh - 55px)"}} body]]))

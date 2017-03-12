@@ -20,6 +20,10 @@
    [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
+   (for [participant participants]
+     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/" (:username participant))
+                                                :style {:border 0 :border-radius 0}}
+      (:name participant)])
    [:a.list-group-item.active.text-justify.bg-faded {:href (str room-base-url "/user/bar")
                                                      :style {:border 0 :border-radius 0}}
     "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
@@ -60,7 +64,7 @@
   (let [id (:id params)
         room-base-url (str "/room/" id)]
     (re/dispatch [[:get-participants] {:room_id id}])
-    (fn [room-base-url]
+    (fn []
       [layout/chat-layout
        [:div.row.h-100
         [navbar-mobile room-base-url @(re/subscribe [[:data :room :participants]])]
