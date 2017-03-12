@@ -15,7 +15,6 @@
 (def ^:private header-height "55px")
 
 (defn navbar-entries [room-base-url participants]
-  (print participants)
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
                                               :style {:border 0 :border-radius 0}}
