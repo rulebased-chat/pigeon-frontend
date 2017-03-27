@@ -10,54 +10,10 @@
             [pigeon-frontend.view-model :refer [app]]
             [dommy.core :refer-macros [sel sel1]]
             [hodgepodge.core :refer [local-storage clear!]]
-            [re-frame.core :as re]))
-
-(def ^:private header-height "55px")
-
-(defn navbar-entries [room-base-url participants]
-  [:ul.list-group
-   [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
-                                              :style {:border 0 :border-radius 0}}
-    "Go back"]
-   (for [participant participants]
-     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/" (:username participant))
-                                                :style {:border 0 :border-radius 0}}
-      (:name participant)])
-   [:a.list-group-item.active.text-justify.bg-faded {:href (str room-base-url "/user/bar")
-                                                     :style {:border 0 :border-radius 0}}
-    "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Three"]])
-
-(defn navbar [room-base-url participants]
-  [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
-   [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
-    [navbar-entries room-base-url participants]]])
-
-(defn navbar-mobile [room-base-url participants]
-  [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
-                                            :height (str "calc(100vh - " header-height ")")
-                                            :position "absolute"
-                                            :z-index "1000"}}
-   [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
-    [navbar-entries room-base-url participants]]])
-
-(defn chat-input [style-opts]
-  [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
-                                                                          :bottom "0px"
-                                                                          :border-top "1px solid #d9d9d9"
-                                                                          :box-shadow "0px 10000px 0px 10000px #f7f7f9"}
-                                                                         style-opts)}
-   [:textarea.w-100.rounded-left {:type "text"
-                                  :style {:border "1px solid #d9d9d9" :resize "none"}
-                                  :placeholder "Write a message"
-                                  :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
-    @(re/subscribe [[:chat-input :value]])]
-   [:span.input-group-addon.btn.btn-primary "Send"]])
+            [re-frame.core :as re]
+            [pigeon-frontend.components :refer [navbar-mobile
+                                                navbar
+                                                header-height]]))
 
 (defn room-page [params]
   (let [id (:id params)
