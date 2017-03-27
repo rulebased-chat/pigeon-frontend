@@ -1,4 +1,4 @@
-(ns pigeon-frontend.views.room-page
+(ns pigeon-frontend.views.chat-page
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
@@ -51,7 +51,7 @@
                                                                           :bottom "0px"
                                                                           :border-top "1px solid #d9d9d9"
                                                                           :box-shadow "0px 10000px 0px 10000px #f7f7f9"}
-                                                                         style-opts)}
+                                                                    style-opts)}
    [:textarea.w-100.rounded-left {:type "text"
                                   :style {:border "1px solid #d9d9d9" :resize "none"}
                                   :placeholder "Write a message"
@@ -59,7 +59,7 @@
     @(re/subscribe [[:chat-input :value]])]
    [:span.input-group-addon.btn.btn-primary "Send"]])
 
-(defn room-page [params]
+(defn chat-page [params]
   (let [id (:id params)
         room-base-url (str "/room/" id)]
     (re/dispatch [[:get-participants] {:room_id id}])
@@ -71,4 +71,38 @@
         [:div.col-sm-8.col-md-10.p-0
          [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                           :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
-          [:div#messages.p-1]]]]])))
+          [:div#messages.p-1
+           ;; example
+           ;; sent by someone else
+           [:div.col.col-md-6.p-0
+            [:p
+             [:p.mb-0 (take 5 (repeat "Hello world! "))]
+             [:small [:strong "olmorauno"]
+              [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]
+           ;; example
+           ;; sent by user
+           [:div.col.col-md-6.p-0.offset-md-6
+            [:p
+             [:p.mb-0 (take 50 (repeat "ACK "))]
+             [:small [:strong "ilmoraunio"]
+              [:span.text-muted.ml-1 "29.01.2017 14:41"]]]]
+           (take 10 (repeat [:div.col.col-md-6.p-0
+                             [:p
+                              [:p.mb-0 (take 5 (repeat "Hello world! "))]
+                              [:small [:strong "olmorauno"]
+                               [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]))
+           (for [error @(re/subscribe [:errors])]
+             ^{:key error}
+             [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
+              [:strong (:status-text error)] (str " " (get-in error [:response :title]))
+              [:button.close {:type "button"
+                              :data-dismiss "alert"
+                              :aria-label "Close"
+                              :on-click #(re/dispatch [:remove-error error])} "x"]])
+           ;; example
+           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
+            [:strong "Something went wrong"] (str " Please try again.")
+            [:button.close {:type "button"
+                            :data-dismiss "alert"
+                            :aria-label "Close"} "x"]]]]
+         [chat-input {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))

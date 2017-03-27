@@ -11,6 +11,7 @@
               [pigeon-frontend.views.rooms-page :refer [rooms-page]]
               [pigeon-frontend.views.room-create-page :refer [room-create-page]]
               [pigeon-frontend.views.room-page :refer [room-page]]
+              [pigeon-frontend.views.chat-page :refer [chat-page]]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
@@ -41,6 +42,9 @@
 
 (secretary/defroute "/room/:id" {:as params}
   (session/put! :current-page #(partial room-page params)))
+
+(secretary/defroute "/room/:id/user/:user" {:as params}
+  (session/put! :current-page #(partial chat-page params)))
 
 ;; -------------------------
 ;; Initialize app
