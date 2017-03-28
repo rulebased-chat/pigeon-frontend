@@ -49,15 +49,16 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [navbar-entries room-base-url participants]]])
 
-(defn chat-input [style-opts]
-  [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
-                                                                          :bottom "0px"
-                                                                          :border-top "1px solid #d9d9d9"
-                                                                          :box-shadow "0px 10000px 0px 10000px #f7f7f9"}
-                                                                    style-opts)}
-   [:textarea.w-100.rounded-left {:type "text"
-                                  :style {:border "1px solid #d9d9d9" :resize "none"}
-                                  :placeholder "Write a message"
-                                  :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
-    @(re/subscribe [[:chat-input :value]])]
-   [:span.input-group-addon.btn.btn-primary "Send"]])
+(defn chat-input [submit-fn style-opts]
+  [:form {:on-submit submit-fn}
+   [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
+                                                                           :bottom "0px"
+                                                                           :border-top "1px solid #d9d9d9"
+                                                                           :box-shadow "0px 10000px 0px 10000px #f7f7f9"}
+                                                                     style-opts)}
+    [:textarea.w-100.rounded-left {:type "text"
+                                   :style {:border "1px solid #d9d9d9" :resize "none"}
+                                   :placeholder "Write a message"
+                                   :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
+     @(re/subscribe [[:chat-input :value]])]
+    [:button.input-group-addon.btn.btn-primary {:type "submit"} "Send"]]])

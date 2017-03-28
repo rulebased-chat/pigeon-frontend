@@ -62,4 +62,6 @@
             [:button.close {:type "button"
                             :data-dismiss "alert"
                             :aria-label "Close"} "x"]]]]
-         [chat-input {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))
+         [chat-input (fn [event] (.preventDefault event) ;; todo: add dispatcher
+                                 (.log js/console "foo"))
+                     {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))

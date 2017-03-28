@@ -193,6 +193,10 @@
   (fn [db [_ value]]
     (assoc-in db [:chat-input :value] value)))
 
+;; chat page
+
+;; todo: post ajax dispatch fn with parameters room_id, sender, participant + message
+
 ;; session
 
 (re/reg-event-db
