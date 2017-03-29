@@ -84,6 +84,25 @@
         rows-or-rowcap (if (< rows rowcap) rows rowcap)]
     (* rows-or-rowcap line-height-in-pixels))))
 
+;; chat page
+
+(re/reg-sub
+  [:fields :chat-page :room_id]
+  (fn [db _]
+    (get-in db [:fields :chat-page :room_id])))
+
+(re/reg-sub [:fields :chat-page :sender]
+  (fn [db _]
+    (get-in db [:fields :chat-page :sender])))
+
+(re/reg-sub [:fields :chat-page :recipient]
+  (fn [db _]
+    (get-in db [:fields :chat-page :recipient])))
+
+(re/reg-sub [:fields :chat-page :message]
+  (fn [db _]
+    (get-chat-input-value db)))
+
 ;; session
 
 (re/reg-sub

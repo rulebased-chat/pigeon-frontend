@@ -14,6 +14,11 @@
   :initialize
   (fn [_ _] @app))
 
+;; fns
+
+(defn set-chat-input-value! [db value]
+  (assoc-in db [:chat-input :value] value))
+
 ;; login page
 
 (re/reg-event-db
@@ -66,6 +71,11 @@
        :response-format :json
        :keywords? true})
     db))
+
+(re/reg-event-db
+  [:send-message :success]
+  (fn [db [_ value]]
+    (set-chat-input-value! db "")))
 
 ;; register page
 
@@ -191,11 +201,46 @@
 (re/reg-event-db
   [:chat-input :value]
   (fn [db [_ value]]
-    (assoc-in db [:chat-input :value] value)))
+    (set-chat-input-value! db value)))
 
 ;; chat page
 
-;; todo: post ajax dispatch fn with parameters room_id, sender, participant + message
+(re/reg-event-db
+  [:fields :chat-page :room_id]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :room_id] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :sender]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :sender] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :recipient]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :recipient] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :message]
+  (fn [db [_ value]]
+    (set-chat-input-value! db value)))
+
+;; todo: dynamic fields
+(re/reg-event-db
+  [:send-message]
+  (fn [db [_ data]]
+    (POST (get-context-path "/api/v0/message")
+      {:params {:room_id ;;@(re/subscribe [[:fields :chat-page :room_id]])
+                "b2b22da6-1325-11e7-996f-4753158f1ff5"
+                :sender ;;@(re/subscribe [[:fields :chat-page :sender]])
+                "b4133eba-1325-11e7-8781-1bf1f9ec92ca"
+                :recipient ;;@(re/subscribe [[:fields :chat-page :recipient]])
+                "f1cee704-1325-11e7-ab3b-cf77a2e870dd"
+                :message @(re/subscribe [[:fields :chat-page :message]])}
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :handler #(re/dispatch [[:send-message :success] %1]) ;; todo: doesn't empty chat-input atm
+       :error-handler #(re/dispatch [[:error-handler] %1])})
+    db))
 
 ;; session
 

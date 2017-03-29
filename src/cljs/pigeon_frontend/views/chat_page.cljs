@@ -16,6 +16,10 @@
                                                 header-height
                                                 chat-input]]))
 
+(defn send-message [event]
+  (.preventDefault event)
+  (re/dispatch [[:send-message]]))
+
 (defn chat-page [params]
   (let [id (:id params)
         room-base-url (str "/room/" id)]
@@ -62,6 +66,5 @@
             [:button.close {:type "button"
                             :data-dismiss "alert"
                             :aria-label "Close"} "x"]]]]
-         [chat-input (fn [event] (.preventDefault event) ;; todo: add dispatcher
-                                 (.log js/console "foo"))
+         [chat-input {:on-submit send-message}
                      {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))

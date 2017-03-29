@@ -10,7 +10,10 @@
               :login-page {:username ""
                            :password ""}
               :rooms-page {}
-              :room-create-page {:name ""}}
+              :room-create-page {:name ""}
+              :chat-page {:room_id nil
+                          :sender nil
+                          :recipient nil}}
      :data {:rooms [{:name "placeholder room"}]
             :room {:participants []}}
      :navbar-mobile {:collapsed true}

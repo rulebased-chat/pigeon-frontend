@@ -23,7 +23,7 @@
                                               :style {:border 0 :border-radius 0}}
     "Room settings"]
    (for [participant participants]
-     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/" (:username participant))
+     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/" (:id participant))
                                                 :style {:border 0 :border-radius 0}}
       (:name participant)])
    [:a.list-group-item.active.text-justify.bg-faded {:href (str room-base-url "/user/bar")
@@ -49,8 +49,8 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [navbar-entries room-base-url participants]]])
 
-(defn chat-input [submit-fn style-opts]
-  [:form {:on-submit submit-fn}
+(defn chat-input [form-map style-opts]
+  [:form form-map
    [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
                                                                            :bottom "0px"
                                                                            :border-top "1px solid #d9d9d9"
@@ -59,6 +59,6 @@
     [:textarea.w-100.rounded-left {:type "text"
                                    :style {:border "1px solid #d9d9d9" :resize "none"}
                                    :placeholder "Write a message"
-                                   :on-change #(re/dispatch [[:chat-input :value] (->  % .-target .-value)])}
+                                   :on-change #(re/dispatch [[:fields :chat-page :message] (-> % .-target .-value)])}
      @(re/subscribe [[:chat-input :value]])]
     [:button.input-group-addon.btn.btn-primary {:type "submit"} "Send"]]])
