@@ -108,6 +108,11 @@
   (fn [db _]
     (get-chat-input-value db)))
 
+(re/reg-sub
+  [:data :room :messages]
+  (fn [db _]
+    (get-in db [:data :room :messages])))
+
 ;; session
 
 (re/reg-sub

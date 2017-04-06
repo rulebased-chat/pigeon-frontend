@@ -248,13 +248,29 @@
   [:send-message]
   (fn [db [_ data]]
     (POST (get-context-path "/api/v0/message")
-      {:params {:room_id @(re/subscribe [[:fields :chat-page :room_id]])
-                :sender @(re/subscribe [[:fields :chat-page :sender]])
-                :recipient @(re/subscribe [[:fields :chat-page :recipient]])
-                :message @(re/subscribe [[:fields :chat-page :message]])}
+      {:params data
        :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
        :handler #(re/dispatch [[:send-message :success] %1]) ;; todo: doesn't empty chat-input atm
        :error-handler #(re/dispatch [[:error-handler] %1])})
+    db))
+
+(re/reg-event-db
+  [:data :room :messages]
+  (fn [db [_ value]]
+    (prn value)
+    (assoc-in db [:data :room :messages] value)))
+
+(re/reg-event-db
+  [:get-room-messages]
+  (fn [db [_ data]]
+    (GET (get-context-path "/api/v0/message")
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :room :messages] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
     db))
 
 ;; session

@@ -18,16 +18,23 @@
 
 (defn send-message [event]
   (.preventDefault event)
-  (re/dispatch [[:send-message]]))
+  (re/dispatch [[:send-message] {:room_id @(re/subscribe [[:fields :chat-page :room_id]])
+                                 :sender @(re/subscribe [[:fields :chat-page :sender]])
+                                 :recipient @(re/subscribe [[:fields :chat-page :recipient]])
+                                 :message @(re/subscribe [[:fields :chat-page :message]])}]))
 
 (defn chat-page [params]
   (let [id (:id params)
         sender-id (:sender params)
-        room-base-url (str "/room/" id)]
+        room-base-url (str "/room/" id)
+        recipient-id (:recipient params)]
     (re/dispatch [[:fields :chat-page :room_id] (:id params)])
-    (re/dispatch [[:fields :chat-page :sender] (:sender params)])
-    (re/dispatch [[:fields :chat-page :recipient] (:recipient params)])
+    (re/dispatch [[:fields :chat-page :sender] sender-id])
+    (re/dispatch [[:fields :chat-page :recipient] recipient-id])
     (re/dispatch [[:get-participants] {:room_id id}])
+    (re/dispatch [[:get-room-messages] {:room_id   id
+                                        :sender    sender-id
+                                        :recipient recipient-id}])
     (fn []
       [layout/chat-layout
        [:div.row.h-100
