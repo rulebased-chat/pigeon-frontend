@@ -22,13 +22,17 @@
 
 (defn chat-page [params]
   (let [id (:id params)
+        sender-id (:sender params)
         room-base-url (str "/room/" id)]
+    (re/dispatch [[:fields :chat-page :room_id] (:id params)])
+    (re/dispatch [[:fields :chat-page :sender] (:sender params)])
+    (re/dispatch [[:fields :chat-page :recipient] (:recipient params)])
     (re/dispatch [[:get-participants] {:room_id id}])
     (fn []
       [layout/chat-layout
        [:div.row.h-100
-        [navbar-mobile room-base-url @(re/subscribe [[:data :room :participants]])]
-        [navbar room-base-url @(re/subscribe [[:data :room :participants]])]
+        [navbar-mobile room-base-url sender-id @(re/subscribe [[:data :room :participants]])]
+        [navbar room-base-url sender-id @(re/subscribe [[:data :room :participants]])]
         [:div.col-sm-8.col-md-10.p-0
          [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                           :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}

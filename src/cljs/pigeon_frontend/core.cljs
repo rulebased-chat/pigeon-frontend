@@ -41,9 +41,10 @@
   (session/put! :current-page #'room-create-page))
 
 (secretary/defroute "/room/:id" {:as params}
-  (session/put! :current-page #(partial room-page params)))
+  (let [params (assoc params :username @(re/subscribe [:session-username]))]
+    (session/put! :current-page #(partial room-page params))))
 
-(secretary/defroute "/room/:id/user/:user" {:as params}
+(secretary/defroute "/room/:id/sender/:sender/recipient/:recipient" {:as params}
   (session/put! :current-page #(partial chat-page params)))
 
 ;; -------------------------

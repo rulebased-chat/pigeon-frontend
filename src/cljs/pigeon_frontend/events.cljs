@@ -194,6 +194,24 @@
     db))
 
 (re/reg-event-db
+  [:data :room :sender]
+  (fn [db [_ [value]]]
+    (assoc-in db [:data :room :sender] value)))
+
+(re/reg-event-db
+  [:get-participant-sender]
+  (fn [db [_ data]]
+    (GET (get-context-path "/api/v0/participant")
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :room :sender] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
+    db))
+
+(re/reg-event-db
   [:navbar-mobile :collapsed]
   (fn [db [_ value]]
     (assoc-in db [:navbar-mobile :collapsed] (not value))))
@@ -230,12 +248,9 @@
   [:send-message]
   (fn [db [_ data]]
     (POST (get-context-path "/api/v0/message")
-      {:params {:room_id ;;@(re/subscribe [[:fields :chat-page :room_id]])
-                "b2b22da6-1325-11e7-996f-4753158f1ff5"
-                :sender ;;@(re/subscribe [[:fields :chat-page :sender]])
-                "b4133eba-1325-11e7-8781-1bf1f9ec92ca"
-                :recipient ;;@(re/subscribe [[:fields :chat-page :recipient]])
-                "f1cee704-1325-11e7-ab3b-cf77a2e870dd"
+      {:params {:room_id @(re/subscribe [[:fields :chat-page :room_id]])
+                :sender @(re/subscribe [[:fields :chat-page :sender]])
+                :recipient @(re/subscribe [[:fields :chat-page :recipient]])
                 :message @(re/subscribe [[:fields :chat-page :message]])}
        :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
        :handler #(re/dispatch [[:send-message :success] %1]) ;; todo: doesn't empty chat-input atm

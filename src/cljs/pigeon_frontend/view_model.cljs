@@ -15,7 +15,8 @@
                           :sender nil
                           :recipient nil}}
      :data {:rooms [{:name "placeholder room"}]
-            :room {:participants []}}
+            :room {:participants []
+                   :sender nil}}
      :navbar-mobile {:collapsed true}
      :chat-input {:value ""}
      :errors #{}}))

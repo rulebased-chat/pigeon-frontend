@@ -14,40 +14,37 @@
 
 (def header-height "55px")
 
-(defn navbar-entries [room-base-url participants]
+(defn navbar-entries [room-base-url sender-id participants]
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   [:a.list-group-item.text-justify.bg-faded {:href room-base-url
-                                              :style {:border 0 :border-radius 0}}
-    "Room settings"]
    (for [participant participants]
-     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/" (:id participant))
+     [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/sender/" sender-id "/recipient/" (:id participant))
                                                 :style {:border 0 :border-radius 0}}
       (:name participant)])
-   [:a.list-group-item.active.text-justify.bg-faded {:href (str room-base-url "/user/bar")
+   [:a.list-group-item.active.text-justify.bg-faded {:href (str room-base-url "/sender/foo/recipient/bar")
                                                      :style {:border 0 :border-radius 0}}
     "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/bar")
+   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/sender/foo/recipient/bar")
                                               :style {:border 0 :border-radius 0}}
     "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/user/bar")
+   [:a.list-group-item.text-justify.bg-faded {:href (str room-base-url "/sender/foo/recipient/bar")
                                               :style {:border 0 :border-radius 0}}
     "Three"]])
 
-(defn navbar [room-base-url participants]
+(defn navbar [room-base-url sender-id participants]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
    [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
-    [navbar-entries room-base-url participants]]])
+    [navbar-entries room-base-url sender-id participants]]])
 
-(defn navbar-mobile [room-base-url participants]
+(defn navbar-mobile [room-base-url sender-id participants]
   [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
                                             :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
                                             :z-index "1000"}}
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
-    [navbar-entries room-base-url participants]]])
+    [navbar-entries room-base-url sender-id participants]]])
 
 (defn chat-input [form-map style-opts]
   [:form form-map

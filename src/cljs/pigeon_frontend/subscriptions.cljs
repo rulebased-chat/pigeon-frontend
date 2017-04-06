@@ -66,6 +66,11 @@
   (fn [db _]
     (get-in db [:data :room :participants])))
 
+(re/reg-sub
+  [:data :room :sender :id]
+  (fn [db _]
+    (get-in db [:data :room :sender :id])))
+
 (defn get-chat-input-value [db]
   (get-in db [:chat-input :value]))
 

@@ -34,7 +34,7 @@
   (GET "/rooms" [] (loading-page))
   (GET "/room" [] (loading-page))
   (GET "/room/:id" [_] (loading-page))
-  (GET "/room/:id/user/:user" [_] (loading-page))
+  (GET "/room/:id/sender/:sender/recipient/:recipient" [_] (loading-page))
   
   (resources "/")
   (not-found "Not Found"))
