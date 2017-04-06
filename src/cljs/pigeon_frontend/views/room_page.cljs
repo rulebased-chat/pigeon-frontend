@@ -30,7 +30,7 @@
                        @(re/subscribe [[:data :room :sender :id]])
                        @(re/subscribe [[:data :room :participants]])]
         [navbar room-base-url
-                (re/subscribe [[:data :room :sender :id]])
+                @(re/subscribe [[:data :room :sender :id]])
                 @(re/subscribe [[:data :room :participants]])]
         [:div.col-sm-8.col-md-10.p-0
          [:div.col.col-md-12.p-0 {:style {:overflow "auto"
