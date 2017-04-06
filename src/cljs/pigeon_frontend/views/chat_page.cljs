@@ -63,6 +63,20 @@
                               [:p.mb-0 (take 5 (repeat "Hello world! "))]
                               [:small [:strong "olmorauno"]
                                [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]))
+           (for [message @(re/subscribe [[:data :room :messages]])]
+             ^{:key message}
+             (if (:is_from_sender message)
+               ;; todo: probably better to componentize these two
+               [:div.col.col-md-6.p-0.offset-md-6
+                [:p
+                 [:p.mb-0 (:message message)]
+                 [:small [:strong (:sender message)]
+                  [:span.text-muted.ml-1 (:updated message)]]]]
+               [:div.col.col-md-6.p-0
+                [:p
+                 [:p.mb-0 (:message message)]
+                 [:small [:strong (:sender message)]
+                  [:span.text-muted.ml-1 (:updated message)]]]]))
            (for [error @(re/subscribe [:errors])]
              ^{:key error}
              [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
