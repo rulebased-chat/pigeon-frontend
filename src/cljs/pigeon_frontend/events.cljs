@@ -243,7 +243,6 @@
   (fn [db [_ value]]
     (set-chat-input-value! db value)))
 
-;; todo: dynamic fields
 (re/reg-event-db
   [:send-message]
   (fn [db [_ data]]
