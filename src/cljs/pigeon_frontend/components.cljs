@@ -46,7 +46,7 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [navbar-entries room-base-url sender-id participants]]])
 
-(defn chat-input [form-map style-opts]
+(defn chat-input [message-content form-map style-opts]
   [:form form-map
    [:div#chat-input.col.col-md-12.bg-faded.p-1.input-group {:style (merge {:position "absolute"
                                                                            :bottom "0px"
@@ -56,6 +56,6 @@
     [:textarea.w-100.rounded-left {:type "text"
                                    :style {:border "1px solid #d9d9d9" :resize "none"}
                                    :placeholder "Write a message"
-                                   :on-change #(re/dispatch [[:fields :chat-page :message] (-> % .-target .-value)])}
-     @(re/subscribe [[:chat-input :value]])]
+                                   :on-change #(re/dispatch [[:fields :chat-page :message] (-> % .-target .-value)])
+                                   :value message-content}]
     [:button.input-group-addon.btn.btn-primary {:type "submit"} "Send"]]])

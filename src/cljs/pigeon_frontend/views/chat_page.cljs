@@ -44,25 +44,6 @@
          [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                           :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
           [:div#messages.p-1
-           ;; example
-           ;; sent by someone else
-           [:div.col.col-md-6.p-0
-            [:p
-             [:p.mb-0 (take 5 (repeat "Hello world! "))]
-             [:small [:strong "olmorauno"]
-              [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]
-           ;; example
-           ;; sent by user
-           [:div.col.col-md-6.p-0.offset-md-6
-            [:p
-             [:p.mb-0 (take 50 (repeat "ACK "))]
-             [:small [:strong "ilmoraunio"]
-              [:span.text-muted.ml-1 "29.01.2017 14:41"]]]]
-           (take 10 (repeat [:div.col.col-md-6.p-0
-                             [:p
-                              [:p.mb-0 (take 5 (repeat "Hello world! "))]
-                              [:small [:strong "olmorauno"]
-                               [:span.text-muted.ml-1 "29.01.2017 14:37"]]]]))
            (for [message @(re/subscribe [[:data :room :messages]])]
              ^{:key message}
              (if (:is_from_sender message)
@@ -84,12 +65,7 @@
               [:button.close {:type "button"
                               :data-dismiss "alert"
                               :aria-label "Close"
-                              :on-click #(re/dispatch [:remove-error error])} "x"]])
-           ;; example
-           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-            [:strong "Something went wrong"] (str " Please try again.")
-            [:button.close {:type "button"
-                            :data-dismiss "alert"
-                            :aria-label "Close"} "x"]]]]
-         [chat-input {:on-submit send-message}
+                              :on-click #(re/dispatch [:remove-error error])} "x"]])]]
+         [chat-input @(re/subscribe [[:chat-input :value]])
+                     {:on-submit send-message}
                      {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))

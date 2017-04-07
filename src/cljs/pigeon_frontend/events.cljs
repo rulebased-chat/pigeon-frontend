@@ -250,7 +250,7 @@
     (POST (get-context-path "/api/v0/message")
       {:params data
        :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
-       :handler #(re/dispatch [[:send-message :success] %1]) ;; todo: doesn't empty chat-input atm
+       :handler #(re/dispatch [[:send-message :success] %1])
        :error-handler #(re/dispatch [[:error-handler] %1])})
     db))
 
