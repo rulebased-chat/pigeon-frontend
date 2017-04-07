@@ -19,7 +19,6 @@
   (let [id (:id params)
         username @(re/subscribe [:session-username])
         room-base-url (str "/room/" id)]
-    (prn id username)
     (re/dispatch [[:get-participants] {:room_id id}])
     (re/dispatch [[:get-participant-sender] {:room_id id
                                              :username username}])
