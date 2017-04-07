@@ -66,6 +66,11 @@
   (fn [db _]
     (get-in db [:data :room :participants])))
 
+(re/reg-sub
+  [:data :room :sender :id]
+  (fn [db _]
+    (get-in db [:data :room :sender :id])))
+
 (defn get-chat-input-value [db]
   (get-in db [:chat-input :value]))
 
@@ -83,6 +88,30 @@
         line-height-in-pixels 18
         rows-or-rowcap (if (< rows rowcap) rows rowcap)]
     (* rows-or-rowcap line-height-in-pixels))))
+
+;; chat page
+
+(re/reg-sub
+  [:fields :chat-page :room_id]
+  (fn [db _]
+    (get-in db [:fields :chat-page :room_id])))
+
+(re/reg-sub [:fields :chat-page :sender]
+  (fn [db _]
+    (get-in db [:fields :chat-page :sender])))
+
+(re/reg-sub [:fields :chat-page :recipient]
+  (fn [db _]
+    (get-in db [:fields :chat-page :recipient])))
+
+(re/reg-sub [:fields :chat-page :message]
+  (fn [db _]
+    (get-chat-input-value db)))
+
+(re/reg-sub
+  [:data :room :messages]
+  (fn [db _]
+    (get-in db [:data :room :messages])))
 
 ;; session
 

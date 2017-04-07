@@ -14,6 +14,11 @@
   :initialize
   (fn [_ _] @app))
 
+;; fns
+
+(defn set-chat-input-value! [db value]
+  (assoc-in db [:chat-input :value] value))
+
 ;; login page
 
 (re/reg-event-db
@@ -66,6 +71,11 @@
        :response-format :json
        :keywords? true})
     db))
+
+(re/reg-event-db
+  [:send-message :success]
+  (fn [db [_ value]]
+    (set-chat-input-value! db "")))
 
 ;; register page
 
@@ -184,6 +194,24 @@
     db))
 
 (re/reg-event-db
+  [:data :room :sender]
+  (fn [db [_ [value]]]
+    (assoc-in db [:data :room :sender] value)))
+
+(re/reg-event-db
+  [:get-participant-sender]
+  (fn [db [_ data]]
+    (GET (get-context-path "/api/v0/participant")
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :room :sender] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
+    db))
+
+(re/reg-event-db
   [:navbar-mobile :collapsed]
   (fn [db [_ value]]
     (assoc-in db [:navbar-mobile :collapsed] (not value))))
@@ -191,7 +219,58 @@
 (re/reg-event-db
   [:chat-input :value]
   (fn [db [_ value]]
-    (assoc-in db [:chat-input :value] value)))
+    (set-chat-input-value! db value)))
+
+;; chat page
+
+(re/reg-event-db
+  [:fields :chat-page :room_id]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :room_id] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :sender]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :sender] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :recipient]
+  (fn [db [_ value]]
+    (assoc-in db [:fields :chat-page :recipient] value)))
+
+(re/reg-event-db
+  [:fields :chat-page :message]
+  (fn [db [_ value]]
+    (set-chat-input-value! db value)))
+
+(re/reg-event-db
+  [:send-message]
+  (fn [db [_ data]]
+    (POST (get-context-path "/api/v0/message")
+      {:params data
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :handler #(re/dispatch [[:send-message :success] %1])
+       :error-handler #(re/dispatch [[:error-handler] %1])})
+    db))
+
+(re/reg-event-db
+  [:data :room :messages]
+  (fn [db [_ value]]
+    (prn value)
+    (assoc-in db [:data :room :messages] value)))
+
+(re/reg-event-db
+  [:get-room-messages]
+  (fn [db [_ data]]
+    (GET (get-context-path "/api/v0/message")
+      {:params data
+       :request-format :json
+       :handler #(re/dispatch [[:data :room :messages] %])
+       :error-handler #(re/dispatch [[:error-handler] %1])
+       :headers {:authorization (str "Bearer " @(re/subscribe [:session-token]))}
+       :response-format :json
+       :keywords? true})
+    db))
 
 ;; session
 

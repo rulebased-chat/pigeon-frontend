@@ -34,7 +34,8 @@
          [:tbody
           (for [room @(re/subscribe [[:data :rooms]])]
             ^{:key room}
-            [:tr [:td [:a {:href (str "/room/" (:id room))} (:name room)]]
+            [:tr [:td [:a {:href (str "/room/" (:id room))}
+                        (:name room)]]
              [:td (if (:joined room)
                     [:button.btn.btn-success.btn-sm {:type "button" :disabled true} "Joined"]
                     [:form {:on-submit #(join-room % {:room_id (:id room)
