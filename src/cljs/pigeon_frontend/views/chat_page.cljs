@@ -51,12 +51,12 @@
                [:div.col.col-md-6.p-0.offset-md-6
                 [:p
                  [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender message)]
+                 [:small [:strong (:sender_name message)]
                   [:span.text-muted.ml-1 (:updated message)]]]]
                [:div.col.col-md-6.p-0
                 [:p
                  [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender message)]
+                 [:small [:strong (:sender_name message)]
                   [:span.text-muted.ml-1 (:updated message)]]]]))
            (for [error @(re/subscribe [:errors])]
              ^{:key error}
