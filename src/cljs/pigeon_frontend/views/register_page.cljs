@@ -30,8 +30,8 @@
                        :placeholder "password" :type "password" 
                        :value @(re/subscribe [[:fields :register-page :password]])
                        :on-change #(re/dispatch [[:fields :register-page :password] (-> % .-target .-value)])}]]
-          [:p [:input {:name "full_name" 
-                       :placeholder "full_name" 
+          [:p [:input {:name "name"
+                       :placeholder "name"
                        :value @(re/subscribe [[:fields :register-page :full-name]])
                        :on-change #(re/dispatch [[:fields :register-page :full-name] (-> % .-target .-value)])}]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

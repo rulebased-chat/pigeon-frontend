@@ -86,7 +86,7 @@
       (PUT (get-context-path "/api/v0/user")
         {:params {:username @(re/subscribe [[:fields :register-page :username]])
                   :password @(re/subscribe [[:fields :register-page :password]])
-                  :full_name @(re/subscribe [[:fields :register-page :full-name]])}
+                  :name @(re/subscribe [[:fields :register-page :full-name]])}
          :handler #(re/dispatch [[:register-user :success-handler] %1])
          :error-handler #(re/dispatch [[:error-handler] %1])}))
     db))
