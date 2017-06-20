@@ -24,48 +24,50 @@
                                  :message @(re/subscribe [[:fields :chat-page :message]])}]))
 
 (defn chat-page [params]
-  (let [id (:id params)
-        sender-id (:sender params)
-        room-base-url (str "/room/" id)
-        recipient-id (:recipient params)]
-    (re/dispatch [[:fields :chat-page :room_id] (:id params)])
-    (re/dispatch [[:fields :chat-page :sender] sender-id])
-    (re/dispatch [[:fields :chat-page :recipient] recipient-id])
-    (re/dispatch [[:get-participants] {:room_id id}])
-    (re/dispatch [[:get-room-messages] {:room_id   id
-                                        :sender    sender-id
-                                        :recipient recipient-id}])
+  (let [sender-id (:sender params)
+        recipient-id (:recipient params)
+        ]
+    ;; todo: (re/dispatch [[:fields :chat-page :room_id] (:id params)])
+    ;; todo: (re/dispatch [[:fields :chat-page :sender] sender-id])
+    ;; todo: (re/dispatch [[:fields :chat-page :recipient] recipient-id])
+    ;; todo: (re/dispatch [[:get-participants] {:room_id id}])
+    ;; todo: (re/dispatch [[:get-room-messages] {:room_id   id
+    ;; todo:                                     :sender    sender-id
+    ;; todo:                                     :recipient recipient-id}])
     (fn []
       [layout/chat-layout
        [:div.row.h-100
-        [navbar-mobile room-base-url sender-id @(re/subscribe [[:data :room :participants]])]
-        [navbar room-base-url sender-id @(re/subscribe [[:data :room :participants]])]
+        [navbar-mobile "foo" '()]
+        [navbar "foo" '()]
         [:div.col-sm-8.col-md-10.p-0
-         [:div.col.col-md-12.p-0 {:style {:overflow "auto"
-                                          :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
-          [:div#messages.p-1
-           (for [message @(re/subscribe [[:data :room :messages]])]
-             ^{:key message}
-             (if (:is_from_sender message)
-               ;; todo: probably better to componentize these two
-               [:div.col.col-md-6.p-0.offset-md-6
-                [:p
-                 [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender_name message)]
-                  [:span.text-muted.ml-1 (:updated message)]]]]
-               [:div.col.col-md-6.p-0
-                [:p
-                 [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender_name message)]
-                  [:span.text-muted.ml-1 (:updated message)]]]]))
-           (for [error @(re/subscribe [:errors])]
-             ^{:key error}
-             [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-              [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-              [:button.close {:type "button"
-                              :data-dismiss "alert"
-                              :aria-label "Close"
-                              :on-click #(re/dispatch [:remove-error error])} "x"]])]]
+         (comment [:div.col.col-md-12.p-0 {:style {:overflow "auto"
+                                                   :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
+                   [:div#messages.p-1
+                    (for [message '() ;; todo: @(re/subscribe [[:data :room :messages]])
+                          ]
+                      ^{:key message}
+                      (if (:is_from_sender message)
+                        ;; todo: probably better to componentize these two
+                        [:div.col.col-md-6.p-0.offset-md-6
+                         [:p
+                          [:p.mb-0 (:message message)]
+                          [:small [:strong (:sender_name message)]
+                           [:span.text-muted.ml-1 (:updated message)]]]]
+                        [:div.col.col-md-6.p-0
+                         [:p
+                          [:p.mb-0 (:message message)]
+                          [:small [:strong (:sender_name message)]
+                           [:span.text-muted.ml-1 (:updated message)]]]]))
+                    (for [error '() ;; todo: @(re/subscribe [:errors])
+                          ]
+                      ^{:key error}
+                      [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
+                       [:strong (:status-text error)] (str " " (get-in error [:response :title]))
+                       [:button.close {:type "button"
+                                       :data-dismiss "alert"
+                                       :aria-label "Close"
+                                       ;; todo: :on-click #(re/dispatch [:remove-error error])
+                                       } "x"]])]])
          [chat-input @(re/subscribe [[:chat-input :value]])
-                     {:on-submit send-message}
-                     {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))
+          {} ;; todo: {:on-submit send-message}
+          {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))

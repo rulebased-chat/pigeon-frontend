@@ -72,7 +72,7 @@
     (get-in db [:data :room :sender :id])))
 
 (defn get-chat-input-value [db]
-  (get-in db [:chat-input :value]))
+  (get-in db [:chat-input :value] ""))
 
 (re/reg-sub
   [:chat-input :value]

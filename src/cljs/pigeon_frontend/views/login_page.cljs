@@ -8,7 +8,6 @@
               [pigeon-frontend.ajax :refer [error-handler]]
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
-              [pigeon-frontend.views.rooms-page :refer [rooms-page]]
               [hodgepodge.core :refer [local-storage clear!]]
               [re-frame.core :as re]))
 
@@ -27,13 +26,15 @@
                  "Enter your username and password to sign in"
     [:div.row
       [:div.col-sm-12
-        [:form {:on-submit login-user}
+        [:form ;; todo: {:on-submit login-user}
           [:p [:input {:name "username"
                        :placeholder "username"
-                       :value @(re/subscribe [[:fields :login-page :username]])
-                       :on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])}]]
+                       ;; todo: :value @(re/subscribe [[:fields :login-page :username]])
+                       ;; todo: :on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])
+                       }]]
           [:p [:input {:name "password"
                        :placeholder "password" :type "password"
-                       :value @(re/subscribe [[:fields :login-page :password]])
-                       :on-change #(re/dispatch [[:fields :login-page :password] (-> % .-target .-value)])}]]
+                       ;; todo: :value @(re/subscribe [[:fields :login-page :password]])
+                       ;; todo: :on-change #(re/dispatch [[:fields :login-page :password] (-> % .-target .-value)])
+                       }]]
           [:p [:button.btn.btn-default {:type "submit"} "Submit"]]]]]])

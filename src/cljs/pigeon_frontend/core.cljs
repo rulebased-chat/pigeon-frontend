@@ -5,12 +5,7 @@
               [accountant.core :as accountant]
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
-              [pigeon-frontend.views.register-page :refer [register-page]]
               [pigeon-frontend.views.login-page :refer [login-page]]
-              [pigeon-frontend.views.home-page :refer [home-page]]
-              [pigeon-frontend.views.rooms-page :refer [rooms-page]]
-              [pigeon-frontend.views.room-create-page :refer [room-create-page]]
-              [pigeon-frontend.views.room-page :refer [room-page]]
               [pigeon-frontend.views.chat-page :refer [chat-page]]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
@@ -25,26 +20,10 @@
 ;; -------------------------
 ;; Routes
 
-(secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
-
 (secretary/defroute "/login" []
   (session/put! :current-page #'login-page))
 
-(secretary/defroute "/register" []
-  (session/put! :current-page #'register-page))
-
-(secretary/defroute "/rooms" []
-  (session/put! :current-page #'rooms-page))
-
-(secretary/defroute "/room" []
-  (session/put! :current-page #'room-create-page))
-
-(secretary/defroute "/room/:id" {:as params}
-  (let [params (assoc params :username @(re/subscribe [:session-username]))]
-    (session/put! :current-page #(partial room-page params))))
-
-(secretary/defroute "/room/:id/sender/:sender/recipient/:recipient" {:as params}
+(secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
   (session/put! :current-page #(partial chat-page params)))
 
 ;; -------------------------
@@ -65,6 +44,6 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (re/dispatch-sync [:initialize])
-  (re/dispatch-sync [:login session])
+  ;;(re/dispatch-sync [:initialize])
+  ;;(re/dispatch-sync [:login session])
   (init!))

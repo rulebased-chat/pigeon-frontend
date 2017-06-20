@@ -7,6 +7,7 @@
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]))
 
+;; todo:
 (defn logout [_]
   (re/dispatch [:logout])
   (clear! local-storage)
@@ -20,7 +21,8 @@
         [:a.navbar-brand {:href "/"} "pigeon-frontend"]
         (if-let [logged-in? @(re/subscribe [:session-token])]
           [:div.pull-xs-right
-            [:button.btn.btn-info {:on-click logout} "Log out"]]
+            [:button.btn.btn-info ;; todo: {:on-click logout}
+             "Log out"]]
           [:div.pull-xs-right
             [:small.m-r-1 [:a {:href "/login"} "Log in"]]
             [:a.btn.btn-info {:href "/register"} "Sign up"]])]
@@ -28,14 +30,16 @@
         [:h2 header]
         [:p.lead lead-text]]
       [:div.container-fluid
-        (for [error @(re/subscribe [:errors])]
+        (for [error '() ;; todo: @(re/subscribe [:errors])
+              ]
           ^{:key error}
           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
             [:strong (:status-text error)] (str " " (get-in error [:response :title]))
             [:button.close {:type "button"
                             :data-dismiss "alert"
                             :aria-label "Close"
-                            :on-click #(re/dispatch [:remove-error error])} "x"]])
+                            ;; todo: :on-click #(re/dispatch [:remove-error error])
+                            } "x"]])
         body]]))
 
 (defn chat-layout [& body]
@@ -48,9 +52,10 @@
        [:a.btn.btn-info.text-white.hidden-sm-up
         {:on-click #(re/dispatch [[:navbar-mobile :collapsed] @(re/subscribe [[:navbar-mobile :collapsed]])])}
         "☰"]]
-      (if-let [logged-in? @(re/subscribe [:session-token])]
+      (if-let [logged-in? false]
         [:div.float-xs-right
-         [:button.btn.btn-info {:on-click logout} "Log out"]]
+         [:button.btn.btn-info ;; todo: {:on-click logout}
+          "Log out"]]
         [:div.float-xs-right
          [:small.m-r-1 [:a {:href "/login"} "Log in"]]
          [:a.btn.btn-info {:href "/register"} "Sign up"]])]
