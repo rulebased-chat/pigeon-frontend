@@ -23,15 +23,19 @@
      [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender-id "/recipient/" (:id participant))
                                                 :style {:border 0 :border-radius 0}}
       (:name participant)])
+   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
+                                              :style {:border 0 :border-radius 0}}
+    "Kaapatut viestit"]
+   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
+                                              :style {:border 0 :border-radius 0}}
+    "Pohjoinen rintamakomentaja"]
+   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
+                                              :style {:border 0 :border-radius 0}}
+    "Keskinen rintamakomentaja" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
    [:a.list-group-item.active.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
                                                      :style {:border 0 :border-radius 0}}
-    "One" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Two" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
-   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Three"]])
+    "Eteläinen rintamakomentaja" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
+   ])
 
 (defn navbar [sender-id participants]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
