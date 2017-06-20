@@ -47,7 +47,7 @@
 ;; room page
 
 (defn get-navbar-mobile-collapsed [db]
-  (get-in db [:navbar-mobile :collapsed]))
+  (get-in db [:navbar-mobile :collapsed] true))
 
 (re/reg-sub
   [:navbar-mobile :collapsed]
