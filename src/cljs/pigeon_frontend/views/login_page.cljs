@@ -9,7 +9,30 @@
               [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
               [hodgepodge.core :refer [local-storage clear!]]
-              [re-frame.core :as re]))
+              [re-frame.core :as re]
+              [tuck.core :refer [tuck wrap wrap-path send-value! Event process-event
+                                 action!
+                                 send-async!]]
+              [tuck.debug :as debug]))
+
+(defrecord LoginSuccesfully [username password])
+(defrecord LoginSuccesfullyResult [result])
+
+(comment (extend-protocol Event
+           LoginSuccesfully
+           (process-event [{username :username
+                            password :password} app]
+             (action! (fn [e!]
+                        (POST "http://localhost:3000/api/v0/session"
+                          {:response-format :json
+                           :handler #(e! (->LoginSuccesfullyResult %))}))))
+
+           LoginSuccesfullyResult
+           (process-event [result app]
+             (.log js/console "GOT RESULT: " (pr-str result))
+             (.log js/console "app: " (pr-str app))
+             ;;(accountant/navigate! "/sender/foo/recipient/bar")
+             )))
 
 (defn login-successful [response]
   ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
@@ -21,7 +44,7 @@
   (.preventDefault response)
   (re/dispatch [[:attempt-login]]))
 
-(defn login-page []
+(defn login-page [e! value]
   [layout/layout "Log in"
                  "Enter your username and password to sign in"
     [:div.row

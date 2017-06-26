@@ -23,7 +23,7 @@
                                  :recipient @(re/subscribe [[:fields :chat-page :recipient]])
                                  :message @(re/subscribe [[:fields :chat-page :message]])}]))
 
-(defn chat-page [params]
+(defn chat-page [params e! value]
   (let [sender-id (:sender params)
         recipient-id (:recipient params)
         ]
