@@ -16,7 +16,7 @@
 
 (defn navbar-entries [sender-id participants]
   [:ul.list-group
-   [:a.list-group-item.text-justify.bg-faded {:href "/rooms"
+   [:a.list-group-item.text-justify.bg-faded {:href "/login"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
    (for [participant participants]
