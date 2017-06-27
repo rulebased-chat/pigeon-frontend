@@ -11,12 +11,10 @@
               [re-frame.core :as re]
               [pigeon-frontend.events]
               [pigeon-frontend.subscriptions]
-              [reagent.core :as r]
-              [tuck.debug :as debug]
-              [tuck.core :as tuck]))
+              [reagent.core :as r]))
 
-(defn current-page [e! value]
-  [:div [((session/get :current-page) e! value)]])
+(defn current-page []
+  [:div [(session/get :current-page)]])
 
 ;; -------------------------
 ;; Routes
@@ -31,7 +29,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (reagent/render [tuck/tuck app current-page] (.getElementById js/document "app")))
+  (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
   (accountant/configure-navigation!
