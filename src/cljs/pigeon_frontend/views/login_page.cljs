@@ -6,23 +6,29 @@
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.ajax :refer [error-handler]]
-              [pigeon-frontend.view-model :refer [app]]
               [pigeon-frontend.context :refer [get-context-path]]
               [hodgepodge.core :refer [local-storage clear!]]
               [re-frame.core :as re]))
 
-;;(def app (reagent/atom {:username "foobar"
-;;                        :password "hunter2"}))
+(def app (reagent/atom {:username ""
+                        :password ""}))
 
 (defn login-successful [response]
-  ;; todo: would probably be better if stored in a browser cookie with HttpOnly enabled
-  (re/dispatch [:login (:session response)])
   (assoc! local-storage :session (:session response))
-  (accountant/navigate! "/rooms"))
+  (swap! app assoc :username "")
+  (swap! app assoc :password "")
+  ;; todo proper address
+  (accountant/navigate! "/sender/foo/recipient/bar"))
 
 (defn login-user [response]
   (.preventDefault response)
-  (re/dispatch [[:attempt-login]]))
+  (POST (get-context-path "/api/v0/session")
+    {:params {:username (get-in @app [:username])
+              :password (get-in @app [:password])}
+     :handler #(login-successful %1)
+     :error-handler #(error-handler %1)
+     :response-format :json
+     :keywords? true}))
 
 (defn login-page []
   [layout/layout "Log in"
@@ -32,13 +38,10 @@
         [:form {:method "POST"}
           [:p [:input {:name "username"
                        :placeholder "username"
-                       ;;:value @(get-in app [:username])
-                       ;; todo: :on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])
-                       ;;:on-change #(re/dispatch [[:fields :login-page :username] (-> % .-target .-value)])
-                       }]]
+                       :value (get-in @app [:username])
+                       :on-change #(swap! app assoc :username (-> % .-target .-value))}]]
           [:p [:input {:name "password"
                        :placeholder "password" :type "password"
-                       ;;:value @(get-in app [:password])
-                       ;; todo: :on-change #(re/dispatch [[:fields :login-page :password] (-> % .-target .-value)])
-                       }]]
-          [:p [:button.btn.btn-default "Submit"]]]]]])
+                       :value (get-in @app [:password])
+                       :on-change #(swap! app assoc :password (-> % .-target .-value))}]]
+          [:p [:button.btn.btn-default {:on-click login-user} "Submit"]]]]]])
