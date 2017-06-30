@@ -14,15 +14,15 @@
 
 (def header-height "55px")
 
-(defn navbar-entries [sender-id participants]
+(defn navbar-entries [sender participants]
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/login"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   (for [participant participants]
-     [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender-id "/recipient/" (:id participant))
+   (for [{:keys [username name]} participants]
+     [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender "/recipient/" username)
                                                 :style {:border 0 :border-radius 0}}
-      (:name participant)])
+      name])
    [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
                                               :style {:border 0 :border-radius 0}}
     "Kaapatut viestit"]
@@ -37,10 +37,10 @@
     "Eteläinen rintamakomentaja" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
    ])
 
-(defn navbar [sender-id participants]
+(defn navbar [sender participants]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
    [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
-    [navbar-entries sender-id participants]]])
+    [navbar-entries sender participants]]])
 
 (defn navbar-mobile [sender-id participants]
   [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])

@@ -19,7 +19,8 @@
 (def app (reagent/atom {:sender ""
                         :recipient ""
                         :message ""
-                        :messages nil}))
+                        :messages nil
+                        :users nil}))
 
 (defn message-succesful [response]
   (swap! app assoc :message ""))
@@ -44,12 +45,18 @@
                 :handler #(swap! app assoc :messages %)
                 :error-handler #(error-handler %1)
                 :response-format :json
+                :keywords? true})
+        _ (GET (get-context-path (str "/api/v0/users/" sender))
+               {:request-format :json
+                :handler #(swap! app assoc :users %)
+                :error-handler #(error-handler %1)
+                :response-format :json
                 :keywords? true})]
     (fn []
       [layout/chat-layout
        [:div.row.h-100
-        [navbar-mobile "foo" '()]
-        [navbar "foo" '()]
+        [navbar-mobile sender (get-in @app [:users])]
+        [navbar sender (get-in @app [:users])]
         [:div.col-sm-8.col-md-10.p-0
          [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                           :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
