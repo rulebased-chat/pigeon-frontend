@@ -24,9 +24,9 @@
 (defn message-succesful [response]
   (swap! app assoc :message ""))
 
-(defn send-message [event]
+(defn send-message [{:keys [sender recipient]} event]
   (.preventDefault event)
-  (POST (get-context-path "/api/v0/sender/foo/recipient/bar")
+  (POST (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
     {:params {:message (:message @app)}
      :handler #(message-succesful %1)
      :error-handler #(error-handler %1)}))
@@ -39,7 +39,7 @@
   ;; todo: (re/dispatch [[:get-room-messages] {:room_id   id
   ;; todo:                                     :sender    sender-id
   ;; todo:                                     :recipient recipient-id}])
-  (let [_ (GET (get-context-path "/api/v0/sender/foo/recipient/bar")
+  (let [_ (GET (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
                {:request-format :json
                 :handler #(swap! app assoc :messages %)
                 :error-handler #(error-handler %1)
@@ -79,5 +79,6 @@
                               ;; todo: :on-click #(re/dispatch [:remove-error error])
                               } "x"]])]]
          [chat-input app ;;@(re/subscribe [[:chat-input :value]])
-          {:on-click send-message}
+          {:on-click (partial send-message {:sender sender
+                                            :recipient recipient})}
           {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))
