@@ -25,16 +25,10 @@
       name])
    [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
                                               :style {:border 0 :border-radius 0}}
-    "Kaapatut viestit"]
-   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Pohjoinen rintamakomentaja"]
-   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "Keskinen rintamakomentaja" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
+    "test" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
    [:a.list-group-item.active.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
                                                      :style {:border 0 :border-radius 0}}
-    "Eteläinen rintamakomentaja" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
+    "test (selected)" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
    ])
 
 (defn navbar [sender participants]
