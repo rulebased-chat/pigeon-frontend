@@ -30,7 +30,8 @@
 (defroutes routes
   (GET "/login" [] (loading-page))
   (GET "/sender/:sender/recipient/:recipient" [_] (loading-page))
-  
+  (GET "/moderator" [] (loading-page))
+
   (resources "/")
   (not-found "Not Found"))
 

@@ -19,7 +19,11 @@
    [:a.list-group-item.text-justify.bg-faded {:href "/login"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   (for [{:keys [username name]} participants]
+   [:a.list-group-item.text-justify.bg-faded {:href "/moderator"
+                                              :style {:border 0 :border-radius 0}}
+    "Moderator"]
+   (for [{:keys [username name] :as participant} participants]
+     ^{:key participant}
      [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender "/recipient/" username)
                                                 :style {:border 0 :border-radius 0}}
       name])

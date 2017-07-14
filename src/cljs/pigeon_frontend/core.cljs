@@ -7,11 +7,13 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.chat-page :refer [chat-page]]
+              [pigeon-frontend.views.moderator-page :refer [moderator-page]]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
               [pigeon-frontend.subscriptions]
-              [reagent.core :as r]))
+              [reagent.core :as r]
+              [hodgepodge.core :refer [local-storage clear!]]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -24,6 +26,10 @@
 
 (secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
   (session/put! :current-page #(partial chat-page params)))
+
+(secretary/defroute "/moderator" []
+  ;; todo: moderator username here
+  (session/put! :current-page #(partial moderator-page {:sender (get-in local-storage [:session :username])})))
 
 ;; -------------------------
 ;; Initialize app
