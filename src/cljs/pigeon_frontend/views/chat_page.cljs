@@ -71,20 +71,29 @@
            [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
             [:div#messages.p-1
-             (for [message (get-in @app [:messages])]
-               ^{:key message}
-               (if (:is_from_sender message)
-                 ;; todo: probably better to componentize these two
-                 [:div.col.col-md-6.p-0.offset-md-6
-                  [:p
-                   [:p.mb-0 (:message message)]
-                   [:small [:strong (:sender_name message)]
-                    [:span.text-muted.ml-1 (:updated message)]]]]
-                 [:div.col.col-md-6.p-0
-                  [:p
-                   [:p.mb-0 (:message message)]
-                   [:small [:strong (:sender_name message)]
-                    [:span.text-muted.ml-1 (:updated message)]]]]))
+             (let [messages-by-message-attempts (group-by :message_attempt (get-in @app [:messages]))]
+               (for [[_ [{:keys [turn_name]} :as messages] :as entry] messages-by-message-attempts]
+                 ^{:key entry}
+                 [:div
+                  [:div.mt-2.mb-1.text-muted {:style {:border-bottom "1px solid #efefef"
+                                                      :line-height "0.1em"
+                                                      :text-align "center"}}
+                   [:small.px-1 {:style {:background-color "#fff"
+                                         :text-transform "uppercase"}} (str "Turn " turn_name)]]
+                  (for [message messages]
+                    ^{:key message}
+                    (if (:is_from_sender message)
+                      ;; todo: probably better to componentize these two
+                      [:div.col.col-md-6.p-0.offset-md-6
+                       [:p
+                        [:p.mb-0 (:message message)]
+                        [:small [:strong (:sender_name message)]
+                         [:span.text-muted.ml-1 (:updated message)]]]]
+                      [:div.col.col-md-6.p-0
+                       [:p
+                        [:p.mb-0 (:message message)]
+                        [:small [:strong (:sender_name message)]
+                         [:span.text-muted.ml-1 (:updated message)]]]]))]))
              (for [error '() ;; todo: @(re/subscribe [:errors])
                    ]
                ^{:key error}

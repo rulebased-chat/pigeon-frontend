@@ -114,7 +114,7 @@
                                             :height (str "calc(100vh - " header-height " - 5em)")}}
             [:div#messages.pt-1.pb-1
              (let [messages-by-message-attempts (group-by :message_attempt (get-in @app [:messages]))]
-               (for [[message-attempt-id [{:keys [message_attempt_deleted turn_name]} :as value] :as entry] messages-by-message-attempts]
+               (for [[message-attempt-id [{:keys [message_attempt_deleted turn_name]} :as messages] :as entry] messages-by-message-attempts]
                  ^{:key entry}
                  [:div
                   [:div
@@ -125,7 +125,7 @@
                     (if message_attempt_deleted
                       [:a {:href "" :on-click (partial undo-delete-message-attempt message-attempt-id)} "Undo delete"]
                       [:a {:href "" :on-click (partial delete-message-attempt message-attempt-id)} "Delete"])]]
-                  (for [message value]
+                  (for [message messages]
                     ^{:key message}
                     [:div.col.pl-1.pr-1
                      [:p
