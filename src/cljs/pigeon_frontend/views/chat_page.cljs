@@ -51,41 +51,51 @@
                 :handler #(swap! app assoc :users %)
                 :error-handler #(error-handler %1)
                 :response-format :json
-                :keywords? true})]
+                :keywords? true})
+        _ (GET (get-context-path "/api/v0/turn")
+            {:request-format :json
+             :handler #(swap! app assoc :turns %1)
+             :error-handler #(error-handler %1)
+             :response-format :json
+             :keywords? true})]
     (fn []
-      [layout/chat-layout
-       [:div.row.h-100
-        [navbar-mobile sender (get-in @app [:users])]
-        [navbar sender (get-in @app [:users])]
-        [:div.col-sm-8.col-md-10.p-0
-         [:div.col.col-md-12.p-0 {:style {:overflow "auto"
-                                          :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
-          [:div#messages.p-1
-           (for [message (get-in @app [:messages])]
-             ^{:key message}
-             (if (:is_from_sender message)
-               ;; todo: probably better to componentize these two
-               [:div.col.col-md-6.p-0.offset-md-6
-                [:p
-                 [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender_name message)]
-                  [:span.text-muted.ml-1 (:updated message)]]]]
-               [:div.col.col-md-6.p-0
-                [:p
-                 [:p.mb-0 (:message message)]
-                 [:small [:strong (:sender_name message)]
-                  [:span.text-muted.ml-1 (:updated message)]]]]))
-           (for [error '() ;; todo: @(re/subscribe [:errors])
-                 ]
-             ^{:key error}
-             [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-              [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-              [:button.close {:type "button"
-                              :data-dismiss "alert"
-                              :aria-label "Close"
-                              ;; todo: :on-click #(re/dispatch [:remove-error error])
-                              } "x"]])]]
-         [chat-input app ;;@(re/subscribe [[:chat-input :value]])
-          {:on-click (partial send-message {:sender sender
-                                            :recipient recipient})}
-          {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]])))
+      (let [turn-name (->> (get-in @app  [:turns])
+                           (filter #(:active %))
+                           first
+                           :name)]
+        [layout/chat-layout turn-name
+         [:div.row.h-100
+          [navbar-mobile turn-name sender (get-in @app [:users])]
+          [navbar sender (get-in @app [:users])]
+          [:div.col-sm-8.col-md-10.p-0
+           [:div.col.col-md-12.p-0 {:style {:overflow "auto"
+                                            :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
+            [:div#messages.p-1
+             (for [message (get-in @app [:messages])]
+               ^{:key message}
+               (if (:is_from_sender message)
+                 ;; todo: probably better to componentize these two
+                 [:div.col.col-md-6.p-0.offset-md-6
+                  [:p
+                   [:p.mb-0 (:message message)]
+                   [:small [:strong (:sender_name message)]
+                    [:span.text-muted.ml-1 (:updated message)]]]]
+                 [:div.col.col-md-6.p-0
+                  [:p
+                   [:p.mb-0 (:message message)]
+                   [:small [:strong (:sender_name message)]
+                    [:span.text-muted.ml-1 (:updated message)]]]]))
+             (for [error '() ;; todo: @(re/subscribe [:errors])
+                   ]
+               ^{:key error}
+               [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
+                [:strong (:status-text error)] (str " " (get-in error [:response :title]))
+                [:button.close {:type "button"
+                                :data-dismiss "alert"
+                                :aria-label "Close"
+                                ;; todo: :on-click #(re/dispatch [:remove-error error])
+                                } "x"]])]]
+           [chat-input app ;;@(re/subscribe [[:chat-input :value]])
+            {:on-click (partial send-message {:sender sender
+                                              :recipient recipient})}
+            {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]]))))

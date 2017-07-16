@@ -42,12 +42,12 @@
                             } "x"]])
         body]]))
 
-(defn chat-layout [& body]
-  (fn [& body]
+(defn chat-layout [turn_name & body]
+  (fn [turn_name & body]
     [:div {:style {:height "100vh"}}
      [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap-flex.css"}]
      [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
-      [:a.navbar-brand.hidden-xs-down {:href "/"} "pigeon-frontend"]
+      [:span.navbar-brand.hidden-xs-down turn_name]
       [:div.float-xs-left
        [:a.btn.btn-info.text-white.hidden-sm-up
         {:on-click #(re/dispatch [[:navbar-mobile :collapsed] @(re/subscribe [[:navbar-mobile :collapsed]])])}

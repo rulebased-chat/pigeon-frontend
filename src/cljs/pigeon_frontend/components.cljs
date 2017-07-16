@@ -40,12 +40,14 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
     [navbar-entries sender participants]]])
 
-(defn navbar-mobile [sender-id participants]
+(defn navbar-mobile [turn-name sender-id participants]
   [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
                                             :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
                                             :z-index "1000"}}
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
+    [:ul.list-group
+     [:span.list-group-item.text-justify.bg-faded {:style {:border 0 :border-radius 0}} turn-name]]
     [navbar-entries sender-id participants]]])
 
 (defn chat-input [app on-click-action style-opts]
