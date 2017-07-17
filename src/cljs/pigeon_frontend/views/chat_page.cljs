@@ -71,8 +71,8 @@
            [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
             [:div#messages.p-1
-             (let [messages-by-message-attempts (group-by :message_attempt (get-in @app [:messages]))]
-               (for [[_ [{:keys [turn_name]} :as messages] :as entry] messages-by-message-attempts]
+             (let [messages-by-turns (group-by :turn (get-in @app [:messages]))]
+               (for [[_ [{:keys [turn_name]} :as messages] :as entry] messages-by-turns]
                  ^{:key entry}
                  [:div
                   [:div.mt-2.mb-1.text-muted {:style {:border-bottom "1px solid #efefef"
