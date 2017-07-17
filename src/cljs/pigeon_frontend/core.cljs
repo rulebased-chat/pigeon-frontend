@@ -13,10 +13,31 @@
               [pigeon-frontend.events]
               [pigeon-frontend.subscriptions]
               [reagent.core :as r]
-              [hodgepodge.core :refer [local-storage clear!]]))
+              [hodgepodge.core :refer [local-storage clear!]]
+              [cognitect.transit :as t]
+              [pigeon-frontend.context :refer [get-context-path]]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
+
+;; -------------------------
+;; Websocket
+
+(defn receive-transit-msg!
+  [update-fn]
+  (fn [msg]
+    (update-fn
+                      ;; todo: fixme
+      (->> msg .-data ;; (t/read json-reader)
+        ))))
+
+(defn make-websocket! [url receive-handler]
+  (println "attempting to connect websocket")
+  (if-let [chan (js/WebSocket. url)]
+    (do
+      (set! (.-onmessage chan) (receive-transit-msg! receive-handler))
+      (println "Websocket connection established with: " url))
+    (throw (js/Error. "Websocket connection failed!"))))
 
 ;; -------------------------
 ;; Routes
@@ -51,4 +72,6 @@
 (defn initialize-app! [session]
   ;;(re/dispatch-sync [:initialize])
   ;;(re/dispatch-sync [:login session])
+  ;; todo: address
+  (make-websocket! "ws://localhost:3000/api/v0/ws" #(println %1))
   (init!))
