@@ -21,6 +21,19 @@
                         :turns nil
                         :selected-turn nil}))
 
+(defn get-turns []
+  (GET (get-context-path "/api/v0/turn")
+    {:request-format :json
+     :handler (fn [vals] (let [turns vals
+                               active-turn-id (->> turns
+                                                (filter #(:active %))
+                                                first
+                                                :id)]
+                           (swap! app assoc :turns turns :selected-turn active-turn-id)))
+     :error-handler #(error-handler %1)
+     :response-format :json
+     :keywords? true}))
+
 (defn get-messages []
   (GET (get-context-path "/api/v0/message")
     {:request-format :json
@@ -77,17 +90,7 @@
              :error-handler #(error-handler %1)
              :response-format :json
              :keywords? true})
-        _ (GET (get-context-path "/api/v0/turn")
-            {:request-format :json
-             :handler (fn [vals] (let [turns vals
-                                      active-turn-id (->> turns
-                                                          (filter #(:active %))
-                                                          first
-                                                          :id)]
-                        (swap! app assoc :turns turns :selected-turn active-turn-id)))
-             :error-handler #(error-handler %1)
-             :response-format :json
-             :keywords? true})]
+        _ (get-turns)]
     (fn []
       (let [turn-name (->> (get-in @app  [:turns])
                         (filter #(:active %))

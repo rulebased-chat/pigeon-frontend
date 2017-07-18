@@ -26,7 +26,8 @@
                  [environ "1.1.0"]
                  [prismatic/dommy "1.1.0"]
                  [hodgepodge "0.1.3"]
-                 [re-frame "0.9.0"]]
+                 [re-frame "0.9.0"]
+                 [com.cognitect/transit-cljs "0.8.239"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.1"]
@@ -109,7 +110,8 @@
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev "true"
-                         :api-context "http://localhost:3000"}}
+                         :api-context "http://localhost:3000"
+                         :ws-context  "ws://localhost:3000"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]

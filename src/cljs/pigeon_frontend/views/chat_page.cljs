@@ -25,6 +25,14 @@
 (defn message-succesful [response]
   (swap! app assoc :message ""))
 
+(defn get-turns []
+  (GET (get-context-path "/api/v0/turn")
+    {:request-format :json
+     :handler #(swap! app assoc :turns %1)
+     :error-handler #(error-handler %1)
+     :response-format :json
+     :keywords? true}))
+
 (defn send-message [{:keys [sender recipient]} event]
   (.preventDefault event)
   (POST (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
@@ -52,12 +60,7 @@
                 :error-handler #(error-handler %1)
                 :response-format :json
                 :keywords? true})
-        _ (GET (get-context-path "/api/v0/turn")
-            {:request-format :json
-             :handler #(swap! app assoc :turns %1)
-             :error-handler #(error-handler %1)
-             :response-format :json
-             :keywords? true})]
+        _ (get-turns)]
     (fn []
       (let [turn-name (->> (get-in @app  [:turns])
                            (filter #(:active %))

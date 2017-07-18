@@ -6,16 +6,17 @@
               [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.login-page :refer [login-page]]
-              [pigeon-frontend.views.chat-page :refer [chat-page]]
-              [pigeon-frontend.views.moderator-page :refer [moderator-page]]
+              [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
+              [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
               [pigeon-frontend.subscriptions]
               [reagent.core :as r]
               [hodgepodge.core :refer [local-storage clear!]]
-              [cognitect.transit :as t]
-              [pigeon-frontend.context :refer [get-context-path]]))
+              [cognitect.transit :as transit]
+              [pigeon-frontend.context :refer [get-context-path
+                                               get-ws-context-path]]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -25,11 +26,10 @@
 
 (defn receive-transit-msg!
   [update-fn]
-  (fn [msg]
-    (update-fn
-                      ;; todo: fixme
-      (->> msg .-data ;; (t/read json-reader)
-        ))))
+  (fn [message]
+    (let [reader (transit/reader :json)]
+      (update-fn
+        (->> message .-data (transit/read reader))))))
 
 (defn make-websocket! [url receive-handler]
   (println "attempting to connect websocket")
@@ -46,10 +46,12 @@
   (session/put! :current-page #(partial #'login-page)))
 
 (secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
+  (session/put! :get-turns-fn chat-page/get-turns)
   (session/put! :current-page #(partial chat-page params)))
 
 (secretary/defroute "/moderator" []
   ;; todo: moderator username here
+  (session/put! :get-turns-fn moderator-page/get-turns)
   (session/put! :current-page #(partial moderator-page {:sender (get-in local-storage [:session :username])})))
 
 ;; -------------------------
@@ -73,5 +75,9 @@
   ;;(re/dispatch-sync [:initialize])
   ;;(re/dispatch-sync [:login session])
   ;; todo: address
-  (make-websocket! "ws://localhost:3000/api/v0/ws" #(println %1))
+  (make-websocket! (get-ws-context-path "/api/v0/ws")
+    (fn [val]
+      (cond
+        (= val :reload-turns)    ((session/get :get-turns-fn))
+        (= val :reload-messages) "reloading messages...")))
   (init!))
