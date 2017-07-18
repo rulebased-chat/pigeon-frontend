@@ -41,18 +41,21 @@
 
 ;; -------------------------
 ;; Routes
+;; Todo: session variables as private atoms
 
 (secretary/defroute "/login" []
   (session/put! :current-page #(partial #'login-page)))
 
 (secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
   (session/put! :get-turns-fn chat-page/get-turns)
-  (session/put! :current-page #(partial chat-page params)))
+  (session/put! :get-messages-fn (partial chat-page/get-messages params))
+  (session/put! :current-page (partial chat-page params)))
 
 (secretary/defroute "/moderator" []
   ;; todo: moderator username here
   (session/put! :get-turns-fn moderator-page/get-turns)
-  (session/put! :current-page #(partial moderator-page {:sender (get-in local-storage [:session :username])})))
+  (session/put! :get-messages-fn moderator-page/get-messages)
+  (session/put! :current-page (partial moderator-page {:sender (get-in local-storage [:session :username])})))
 
 ;; -------------------------
 ;; Initialize app
@@ -79,5 +82,5 @@
     (fn [val]
       (cond
         (= val :reload-turns)    ((session/get :get-turns-fn))
-        (= val :reload-messages) "reloading messages...")))
+        (= val :reload-messages) ((session/get :get-messages-fn)))))
   (init!))

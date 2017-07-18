@@ -25,6 +25,14 @@
 (defn message-succesful [response]
   (swap! app assoc :message ""))
 
+(defn get-messages [{:keys [sender recipient]}]
+  (GET (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
+    {:request-format :json
+     :handler #(swap! app assoc :messages %)
+     :error-handler #(error-handler %1)
+     :response-format :json
+     :keywords? true}))
+
 (defn get-turns []
   (GET (get-context-path "/api/v0/turn")
     {:request-format :json
@@ -40,7 +48,7 @@
      :handler #(message-succesful %1)
      :error-handler #(error-handler %1)}))
 
-(defn chat-page [{:keys [sender recipient]}]
+(defn chat-page [{:keys [sender recipient] :as params}]
   ;; todo: (re/dispatch [[:fields :chat-page :room_id] (:id params)])
   ;; todo: (re/dispatch [[:fields :chat-page :sender] sender-id])
   ;; todo: (re/dispatch [[:fields :chat-page :recipient] recipient-id])
@@ -48,12 +56,7 @@
   ;; todo: (re/dispatch [[:get-room-messages] {:room_id   id
   ;; todo:                                     :sender    sender-id
   ;; todo:                                     :recipient recipient-id}])
-  (let [_ (GET (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
-               {:request-format :json
-                :handler #(swap! app assoc :messages %)
-                :error-handler #(error-handler %1)
-                :response-format :json
-                :keywords? true})
+  (let [_ (get-messages params)
         _ (GET (get-context-path (str "/api/v0/users/" sender))
                {:request-format :json
                 :handler #(swap! app assoc :users %)
