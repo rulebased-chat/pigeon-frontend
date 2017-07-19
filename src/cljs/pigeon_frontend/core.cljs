@@ -8,7 +8,7 @@
               [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
               [pigeon-frontend.views.front-page :refer [front-page]]
               [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
-              [pigeon-frontend.view-model :refer [app navbar-collapsed?]]
+              [pigeon-frontend.view-model :refer [app navbar-collapsed? errors]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
               [pigeon-frontend.subscriptions]
@@ -34,11 +34,15 @@
 
 (defn make-websocket! [url receive-handler]
   (println "attempting to connect websocket")
-  (if-let [chan (js/WebSocket. url)]
-    (do
-      (set! (.-onmessage chan) (receive-transit-msg! receive-handler))
-      (println "Websocket connection established with: " url))
-    (throw (js/Error. "Websocket connection failed!"))))
+  (try (if-let [chan (js/WebSocket. url)]
+         (do
+           (set! (.-onmessage chan) (receive-transit-msg! receive-handler))
+           (println "Websocket connection established with: " url))
+         (throw (js/Error. "Websocket connection failed!")))
+       (catch js/Error e
+         (swap! errors conj {:status 0,
+                             :status-text "Websocket failed.",
+                             :failure :failed}))))
 
 ;; -------------------------
 ;; Routes
