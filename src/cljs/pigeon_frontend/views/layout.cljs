@@ -3,14 +3,15 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [pigeon-frontend.view-model :refer [app navbar-collapsed? errors]]
+            [pigeon-frontend.view-model :refer [app ws-channel navbar-collapsed? errors]]
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]
             [pigeon-frontend.components :refer [error-container]]))
 
-;; todo:
 (defn logout [_]
   (clear! local-storage)
+  (println "Closing websocket...")
+  (.close @ws-channel)
   (accountant/navigate! "/"))
 
 (defn layout [header lead-text & body]
