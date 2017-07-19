@@ -7,6 +7,7 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
+              [pigeon-frontend.views.front-page :refer [front-page]]
               [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
               [pigeon-frontend.view-model :refer [app]]
               [re-frame.core :as re]
@@ -43,6 +44,12 @@
 ;; -------------------------
 ;; Routes
 ;; Todo: session variables as private atoms
+
+(secretary/defroute "/" []
+  (if-let [username (get-in local-storage [:session :username])]
+    (session/put! :current-page (partial front-page {:username username}))
+    (do (session/put! :current-page (fn [_] [:div "Redirecting..."]))
+        (accountant/navigate! "/login"))))
 
 (secretary/defroute "/login" []
   (session/put! :current-page #(partial #'login-page)))

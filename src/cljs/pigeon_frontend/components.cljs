@@ -17,7 +17,7 @@
 
 (defn navbar-entries [sender participants users-to-new-messages]
   [:ul.list-group
-   [:a.list-group-item.text-justify.bg-faded {:href "/login"
+   [:a.list-group-item.text-justify.bg-faded {:href "/"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
    [:a.list-group-item.text-justify.bg-faded {:href "/moderator"

@@ -28,6 +28,7 @@
 
 
 (defroutes routes
+  (GET "/" []      (loading-page))
   (GET "/login" [] (loading-page))
   (GET "/sender/:sender/recipient/:recipient" [_] (loading-page))
   (GET "/moderator" [] (loading-page))
