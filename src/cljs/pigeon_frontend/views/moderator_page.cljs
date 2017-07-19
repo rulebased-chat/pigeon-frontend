@@ -15,7 +15,8 @@
                                                 navbar
                                                 header-height
                                                 chat-input
-                                                users-to-new-messages]]
+                                                users-to-new-messages
+                                                error-container]]
             [pigeon-frontend.ajax :refer [error-handler]]))
 
 (def app (reagent/atom {:messages nil
@@ -142,12 +143,6 @@
                        (if (:deleted message)
                          [:a.ml-1 {:href "" :on-click (partial undo-delete-message (:id message))} "Undo delete"]
                          [:a.ml-1 {:href "" :on-click (partial delete-message (:id message))} "Delete"])]]])]))
-             (for [error @errors]
-               ^{:key error}
-               [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-                [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-                [:button.close {:type "button"
-                                :data-dismiss "alert"
-                                :aria-label "Close"
-                                :on-click #(swap! errors disj error)
-                                } "x"]])]]]]]))))
+             [:div.px-1 (for [error @errors]
+                          ^{:key error}
+                          [error-container error])]]]]]]))))

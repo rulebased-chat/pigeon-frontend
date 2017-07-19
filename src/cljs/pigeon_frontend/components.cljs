@@ -3,11 +3,10 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [pigeon-frontend.views.layout :refer [navbar-collapsed?] :as layout]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.ajax :refer [error-handler]]
             [pigeon-frontend.context :refer [get-context-path]]
-            [pigeon-frontend.view-model :refer [app]]
+            [pigeon-frontend.view-model :refer [app navbar-collapsed? errors]]
             [dommy.core :refer-macros [sel sel1]]
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]))
@@ -69,3 +68,11 @@
                                    :on-change #(swap! app assoc :message (-> % .-target .-value))
                                    :value (get-in @app [:message])}]
     [:button.input-group-addon.btn.btn-primary (merge {:type "submit"} on-click-action) "Send"]]])
+
+(defn error-container [error]
+  [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
+   [:strong (:status-text error)] (str " " (get-in error [:response :title]))
+   [:button.close {:type "button"
+                   :data-dismiss "alert"
+                   :aria-label "Close"
+                   :on-click #(swap! errors disj error)} "x"]])

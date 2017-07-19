@@ -3,7 +3,6 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.view-model :refer [app errors]]
               [re-frame.core :as re]))

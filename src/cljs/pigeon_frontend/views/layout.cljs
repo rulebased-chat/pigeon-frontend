@@ -3,11 +3,10 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [pigeon-frontend.view-model :refer [app errors]]
+            [pigeon-frontend.view-model :refer [app navbar-collapsed? errors]]
             [hodgepodge.core :refer [local-storage clear!]]
-            [re-frame.core :as re]))
-
-(def navbar-collapsed? (atom true))
+            [re-frame.core :as re]
+            [pigeon-frontend.components :refer [error-container]]))
 
 ;; todo:
 (defn logout [_]
@@ -30,13 +29,7 @@
       [:div.container-fluid
         (for [error @errors]
           ^{:key error}
-          [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
-            [:strong (:status-text error)] (str " " (get-in error [:response :title]))
-            [:button.close {:type "button"
-                            :data-dismiss "alert"
-                            :aria-label "Close"
-                            :on-click #(swap! errors disj error)
-                            } "x"]])
+          [error-container error])
         body]]))
 
 (defn chat-layout [turn_name & body]
