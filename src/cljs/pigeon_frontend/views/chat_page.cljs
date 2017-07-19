@@ -6,6 +6,7 @@
             [pigeon-frontend.views.layout :as layout]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.ajax :refer [error-handler]]
+            [pigeon-frontend.view-model :refer [errors]]
             [pigeon-frontend.context :refer [get-context-path]]
             [dommy.core :refer-macros [sel sel1]]
             [hodgepodge.core :refer [local-storage clear!]]
@@ -109,16 +110,14 @@
                         [:p.mb-0 (:message message)]
                         [:small [:strong (:sender_name message)]
                          [:span.text-muted.ml-1 (:updated message)]]]]))]))
-             (for [error '() ;; todo: @(re/subscribe [:errors])
-                   ]
+             (for [error @errors]
                ^{:key error}
                [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
                 [:strong (:status-text error)] (str " " (get-in error [:response :title]))
                 [:button.close {:type "button"
                                 :data-dismiss "alert"
                                 :aria-label "Close"
-                                ;; todo: :on-click #(re/dispatch [:remove-error error])
-                                } "x"]])]]
+                                :on-click #(swap! errors disj error)} "x"]])]]
            [chat-input app ;;@(re/subscribe [[:chat-input :value]])
             {:on-click (partial send-message {:sender sender
                                               :recipient recipient})}

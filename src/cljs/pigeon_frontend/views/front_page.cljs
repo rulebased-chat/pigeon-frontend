@@ -7,6 +7,7 @@
             [pigeon-frontend.views.chat-page :refer [get-turns]]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.ajax :refer [error-handler]]
+            [pigeon-frontend.view-model :refer [errors]]
             [pigeon-frontend.context :refer [get-context-path]]
             [dommy.core :refer-macros [sel sel1]]
             [hodgepodge.core :refer [local-storage clear!]]
@@ -60,13 +61,12 @@
            [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
             [:div#messages.p-1
-             (for [error '() ;; todo: @(re/subscribe [:errors])
-                   ]
+             (for [error @errors]
                ^{:key error}
                [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
                 [:strong (:status-text error)] (str " " (get-in error [:response :title]))
                 [:button.close {:type "button"
                                 :data-dismiss "alert"
                                 :aria-label "Close"
-                                ;; todo: :on-click #(re/dispatch [:remove-error error])
+                                :on-click #(swap! errors disj error)
                                 } "x"]])]]]]]))))

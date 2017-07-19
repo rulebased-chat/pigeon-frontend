@@ -23,4 +23,5 @@
               :chat-input {:value ""}
               :errors #{}})))
 
+(defonce errors (reagent/atom #{}))
 (defonce app (reagent/atom {:navbar-mobile {:collapsed true}}))

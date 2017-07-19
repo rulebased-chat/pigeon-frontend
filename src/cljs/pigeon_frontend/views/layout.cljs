@@ -3,7 +3,7 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [pigeon-frontend.view-model :refer [app]]
+            [pigeon-frontend.view-model :refer [app errors]]
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]))
 
@@ -28,15 +28,14 @@
         [:h2 header]
         [:p.lead lead-text]]
       [:div.container-fluid
-        (for [error '() ;; todo: @(re/subscribe [:errors])
-              ]
+        (for [error @errors]
           ^{:key error}
           [:div.alert.alert-danger.alert-dismissible.fade.in {:role "alert"}
             [:strong (:status-text error)] (str " " (get-in error [:response :title]))
             [:button.close {:type "button"
                             :data-dismiss "alert"
                             :aria-label "Close"
-                            ;; todo: :on-click #(re/dispatch [:remove-error error])
+                            :on-click #(swap! errors disj error)
                             } "x"]])
         body]]))
 

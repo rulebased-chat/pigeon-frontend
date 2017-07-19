@@ -27,14 +27,14 @@
    [:a.list-group-item.text-justify.bg-faded {:href "/"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   [:a.list-group-item.text-justify.bg-faded {:class (when (= "/moderator" (pathname)) "active")
+   [:a.list-group-item.text-justify.bg-faded {:class (when (= (pathname) "/moderator") "active")
                                               :href "/moderator"
                                               :style {:border 0 :border-radius 0}}
     "Moderator"]
    (for [{:keys [username name] :as participant} participants]
      ^{:key participant}
      (let [href (str "/sender/" sender "/recipient/" username)]
-       [:a.list-group-item.text-justify.bg-faded {:class (when (= href (pathname)) "active")
+       [:a.list-group-item.text-justify.bg-faded {:class (when (= (pathname) href) "active")
                                                   :href href
                                                   :style {:border 0 :border-radius 0}}
         name
