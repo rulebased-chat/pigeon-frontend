@@ -3,7 +3,7 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [pigeon-frontend.views.layout :as layout]
+              [pigeon-frontend.views.layout :refer [navbar-collapsed?] :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
@@ -46,23 +46,26 @@
 ;; Todo: session variables as private atoms
 
 (secretary/defroute "/" []
+  (reset! navbar-collapsed? true) ;; todo: probably could hook to some onload listener to reduce duplication...
   (if-let [username (get-in local-storage [:session :username])]
     (session/put! :current-page (partial front-page {:username username}))
     (do (session/put! :current-page (fn [_] [:div "Redirecting..."]))
         (accountant/navigate! "/login"))))
 
 (secretary/defroute "/login" []
+  (reset! navbar-collapsed? true)
   (session/put! :current-page #(partial #'login-page)))
 
 (secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
+  (reset! navbar-collapsed? true)
   (swap! users-to-new-messages dissoc (:recipient params))
   (session/put! :get-turns-fn chat-page/get-turns)
   (session/put! :get-messages-fn (partial chat-page/get-messages params))
-  (session/put! :current-page (partial chat-page
-                                       params)))
+  (session/put! :current-page (partial chat-page params)))
 
 (secretary/defroute "/moderator" []
   ;; todo: moderator username here
+  (reset! navbar-collapsed? true)
   (session/put! :get-turns-fn moderator-page/get-turns)
   (session/put! :get-messages-fn moderator-page/get-messages)
   (session/put! :current-page (partial moderator-page

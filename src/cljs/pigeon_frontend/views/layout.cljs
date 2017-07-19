@@ -7,6 +7,8 @@
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]))
 
+(def navbar-collapsed? (atom true))
+
 ;; todo:
 (defn logout [_]
   (clear! local-storage)
@@ -46,7 +48,7 @@
       [:span.navbar-brand.hidden-xs-down turn_name]
       [:div.float-xs-left
        [:a.btn.btn-info.text-white.hidden-sm-up
-        {:on-click #(re/dispatch [[:navbar-mobile :collapsed] @(re/subscribe [[:navbar-mobile :collapsed]])])}
+        {:on-click #(swap! navbar-collapsed? not)}
         "☰"]]
       (if-let [logged-in? (get-in local-storage [:session])]
         [:div.float-xs-right

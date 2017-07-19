@@ -3,7 +3,7 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [pigeon-frontend.views.layout :as layout]
+            [pigeon-frontend.views.layout :refer [navbar-collapsed?] :as layout]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.ajax :refer [error-handler]]
             [pigeon-frontend.context :refer [get-context-path]]
@@ -47,7 +47,7 @@
     [navbar-entries sender participants users-to-new-messages]]])
 
 (defn navbar-mobile [turn-name sender-id participants users-to-new-messages]
-  [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
+  [:div.col-xs-12.p-0.hidden-sm-up {:style {:display (if @navbar-collapsed? "none" "block")
                                             :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
                                             :z-index "1000"}}
