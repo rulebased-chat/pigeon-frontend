@@ -15,28 +15,31 @@
 (def header-height "55px")
 (def users-to-new-messages (atom {}))
 
+(defn- pathname []
+  (clojure.string/replace (->> js/window .-location .-href)
+    (str (->> js/window .-location .-protocol)
+      "//"
+      (->> js/window .-location .-host))
+    ""))
+
 (defn navbar-entries [sender participants users-to-new-messages]
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   [:a.list-group-item.text-justify.bg-faded {:href "/moderator"
+   [:a.list-group-item.text-justify.bg-faded {:class (when (= "/moderator" (pathname)) "active")
+                                              :href "/moderator"
                                               :style {:border 0 :border-radius 0}}
     "Moderator"]
    (for [{:keys [username name] :as participant} participants]
      ^{:key participant}
-     [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender "/recipient/" username)
-                                                :style {:border 0 :border-radius 0}}
-      name
-      (when-let [new-message-count (get users-to-new-messages username)]
-        [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} new-message-count])])
-   [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                              :style {:border 0 :border-radius 0}}
-    "test" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
-   [:a.list-group-item.active.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
-                                                     :style {:border 0 :border-radius 0}}
-    "test (selected)" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
-   ])
+     (let [href (str "/sender/" sender "/recipient/" username)]
+       [:a.list-group-item.text-justify.bg-faded {:class (when (= href (pathname)) "active")
+                                                  :href href
+                                                  :style {:border 0 :border-radius 0}}
+        name
+        (when-let [new-message-count (get users-to-new-messages username)]
+          [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} new-message-count])]))])
 
 (defn navbar [sender participants users-to-new-messages]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
