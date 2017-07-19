@@ -13,8 +13,9 @@
             [re-frame.core :as re]))
 
 (def header-height "55px")
+(def users-to-new-messages (atom {}))
 
-(defn navbar-entries [sender participants]
+(defn navbar-entries [sender participants users-to-new-messages]
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/login"
                                               :style {:border 0 :border-radius 0}}
@@ -26,7 +27,9 @@
      ^{:key participant}
      [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/" sender "/recipient/" username)
                                                 :style {:border 0 :border-radius 0}}
-      name])
+      name
+      (when-let [new-message-count (get users-to-new-messages username)]
+        [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} new-message-count])])
    [:a.list-group-item.text-justify.bg-faded {:href (str "/sender/foo/recipient/bar")
                                               :style {:border 0 :border-radius 0}}
     "test" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 2]]
@@ -35,12 +38,12 @@
     "test (selected)" [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} 1]]
    ])
 
-(defn navbar [sender participants]
+(defn navbar [sender participants users-to-new-messages]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
    [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
-    [navbar-entries sender participants]]])
+    [navbar-entries sender participants users-to-new-messages]]])
 
-(defn navbar-mobile [turn-name sender-id participants]
+(defn navbar-mobile [turn-name sender-id participants users-to-new-messages]
   [:div.col-xs-12.p-0.hidden-sm-up {:style {:display @(re/subscribe [[:navbar-mobile :display]])
                                             :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
@@ -48,7 +51,7 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [:ul.list-group
      [:span.list-group-item.text-justify.bg-faded {:style {:border 0 :border-radius 0}} turn-name]]
-    [navbar-entries sender-id participants]]])
+    [navbar-entries sender-id participants users-to-new-messages]]])
 
 (defn chat-input [app on-click-action style-opts]
   [:form

@@ -13,14 +13,16 @@
             [pigeon-frontend.components :refer [navbar-mobile
                                                 navbar
                                                 header-height
-                                                chat-input]]
+                                                chat-input
+                                                users-to-new-messages]]
             [pigeon-frontend.ajax :refer [error-handler]]))
 
 (def app (reagent/atom {:sender ""
                         :recipient ""
                         :message ""
                         :messages nil
-                        :users nil}))
+                        :users nil
+                        :users-to-new-messages users-to-new-messages}))
 
 (defn message-succesful [response]
   (swap! app assoc :message ""))
@@ -48,7 +50,7 @@
      :handler #(message-succesful %1)
      :error-handler #(error-handler %1)}))
 
-(defn chat-page [{:keys [sender recipient] :as params}]
+(defn chat-page [{:keys [sender recipient] :as params} users-to-new-messages]
   ;; todo: (re/dispatch [[:fields :chat-page :room_id] (:id params)])
   ;; todo: (re/dispatch [[:fields :chat-page :sender] sender-id])
   ;; todo: (re/dispatch [[:fields :chat-page :recipient] recipient-id])
@@ -71,8 +73,15 @@
                            :name)]
         [layout/chat-layout turn-name
          [:div.row.h-100
-          [navbar-mobile turn-name sender (get-in @app [:users])]
-          [navbar sender (get-in @app [:users])]
+          [navbar-mobile
+            turn-name
+            sender
+            (get-in @app [:users])
+            @(get-in @app [:users-to-new-messages])]
+          [navbar
+            sender
+            (get-in @app [:users])
+            @(get-in @app [:users-to-new-messages])]
           [:div.col-sm-8.col-md-10.p-0
            [:div.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}

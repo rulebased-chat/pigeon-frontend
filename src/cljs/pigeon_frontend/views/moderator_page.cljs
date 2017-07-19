@@ -13,13 +13,15 @@
             [pigeon-frontend.components :refer [navbar-mobile
                                                 navbar
                                                 header-height
-                                                chat-input]]
+                                                chat-input
+                                                users-to-new-messages]]
             [pigeon-frontend.ajax :refer [error-handler]]))
 
 (def app (reagent/atom {:messages nil
                         :users nil
                         :turns nil
-                        :selected-turn nil}))
+                        :selected-turn nil
+                        :users-to-new-messages users-to-new-messages}))
 
 (defn get-turns []
   (GET (get-context-path "/api/v0/turn")
@@ -81,7 +83,6 @@
      :response-format :json
      :keywords? true}))
 
-
 (defn moderator-page [{:keys [sender]}]
   (let [_ (get-messages)
         _ (GET (get-context-path (str "/api/v0/users/" sender))
@@ -98,8 +99,8 @@
                         :name)]
         [layout/chat-layout turn-name
          [:div.row.h-100
-          [navbar-mobile turn-name sender (get-in @app [:users])]
-          [navbar sender (get-in @app [:users])]
+          [navbar-mobile turn-name sender (get-in @app [:users]) @(get-in @app [:users-to-new-messages])]
+          [navbar sender (get-in @app [:users]) @(get-in @app [:users-to-new-messages])]
           [:div.col-sm-8.col-md-10.p-0
            [:form {:on-submit (partial change-turn (get-in @app [:selected-turn]))}
             [:div#change-turn.col.col-md-12.bg-faded.p-1.input-group {:style {:position "absolute"
