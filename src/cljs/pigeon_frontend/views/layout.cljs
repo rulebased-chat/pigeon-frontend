@@ -9,7 +9,6 @@
 
 ;; todo:
 (defn logout [_]
-  (re/dispatch [:logout])
   (clear! local-storage)
   (accountant/navigate! "/"))
 
@@ -19,13 +18,10 @@
       [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap.css"}]
       [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
         [:a.navbar-brand {:href "/"} "pigeon-frontend"]
-        (if-let [logged-in? @(re/subscribe [:session-token])]
+        (if-let [logged-in? (get-in local-storage [:session])]
           [:div.pull-xs-right
-            [:button.btn.btn-info ;; todo: {:on-click logout}
-             "Log out"]]
-          [:div.pull-xs-right
-            [:small.m-r-1 [:a {:href "/login"} "Log in"]]
-            [:a.btn.btn-info {:href "/register"} "Sign up"]])]
+            [:button.btn.btn-info {:on-click logout}
+             "Log out"]])]
       [:div.jumbotron
         [:h2 header]
         [:p.lead lead-text]]
@@ -52,9 +48,9 @@
        [:a.btn.btn-info.text-white.hidden-sm-up
         {:on-click #(re/dispatch [[:navbar-mobile :collapsed] @(re/subscribe [[:navbar-mobile :collapsed]])])}
         "☰"]]
-      (if-let [logged-in? false]
+      (if-let [logged-in? (get-in local-storage [:session])]
         [:div.float-xs-right
-         [:button.btn.btn-info ;; todo: {:on-click logout}
+         [:button.btn.btn-info {:on-click logout}
           "Log out"]]
         [:div.float-xs-right
          [:small.m-r-1 [:a {:href "/login"} "Log in"]]

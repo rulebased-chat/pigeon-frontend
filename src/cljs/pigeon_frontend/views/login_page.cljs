@@ -18,7 +18,7 @@
   (swap! app assoc :username "")
   (swap! app assoc :password "")
   ;; todo proper address
-  (accountant/navigate! "/sender/foo/recipient/bar"))
+  (accountant/navigate! "/"))
 
 (defn login-user [response]
   (.preventDefault response)
