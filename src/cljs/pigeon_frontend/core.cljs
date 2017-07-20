@@ -39,6 +39,7 @@
 
 (secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
   (reset! navbar-collapsed? true)
+  (swap! chat-page/app assoc :messages nil)
   (swap! users-to-new-messages dissoc (:recipient params))
   (session/put! :get-turns-fn chat-page/get-turns)
   (session/put! :get-messages-fn (partial chat-page/get-messages params))

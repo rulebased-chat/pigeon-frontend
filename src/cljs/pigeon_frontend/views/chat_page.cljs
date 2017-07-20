@@ -32,11 +32,6 @@
   (fn [key atom old-state new-state]
     (when (not= (get-in old-state [:messages])
                 (get-in new-state [:messages]))
-      (do (println "scrollbox" (.-scrollTop (.getElementById js/document "scrollbox")))
-          (println "scrollHeight with buffer subtracted (600)" (- (.-scrollHeight (.getElementById js/document "messages")) 600))
-          (println "near enough bottom?" (>= (.-scrollTop (.getElementById js/document "scrollbox"))
-                                             (- (.-scrollHeight (.getElementById js/document "messages"))
-                                                600))))
       (if-let [near-enough-bottom? (>= (.-scrollTop (.getElementById js/document "scrollbox"))
                                      (- (.-scrollHeight (.getElementById js/document "messages"))
                                        600))]
