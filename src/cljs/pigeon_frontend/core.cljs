@@ -6,7 +6,7 @@
               [ajax.core :refer [GET POST PUT DELETE]]
               [pigeon-frontend.views.login-page :refer [login-page make-websocket-with-defaults]]
               [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
-              [pigeon-frontend.views.front-page :refer [front-page]]
+              [pigeon-frontend.views.front-page :refer [front-page] :as front-page]
               [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
               [pigeon-frontend.view-model :refer [app ws-channel navbar-collapsed? errors]]
               [re-frame.core :as re]
@@ -28,7 +28,8 @@
 (secretary/defroute "/" []
   (reset! navbar-collapsed? true) ;; todo: probably could hook to some onload listener to reduce duplication...
   (if-let [username (get-in local-storage [:session :username])]
-    (session/put! :current-page (partial front-page {:username username}))
+    (do (session/put! :get-turns-fn (partial chat-page/get-turns front-page/app))
+        (session/put! :current-page (partial front-page {:username username})))
     (do (session/put! :current-page (fn [_] [:div "Redirecting..."]))
         (accountant/navigate! "/login"))))
 
