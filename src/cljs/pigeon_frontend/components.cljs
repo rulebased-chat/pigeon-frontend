@@ -21,15 +21,16 @@
       (->> js/window .-location .-host))
     ""))
 
-(defn navbar-entries [sender participants users-to-new-messages]
+(defn navbar-entries [sender participants users-to-new-messages is-moderator?]
   [:ul.list-group
    [:a.list-group-item.text-justify.bg-faded {:href "/"
                                               :style {:border 0 :border-radius 0}}
     "Go back"]
-   [:a.list-group-item.text-justify.bg-faded {:class (when (= (pathname) "/moderator") "active")
-                                              :href "/moderator"
-                                              :style {:border 0 :border-radius 0}}
-    "Moderator"]
+   (when is-moderator?
+     [:a.list-group-item.text-justify.bg-faded {:class (when (= (pathname) "/moderator") "active")
+                                                :href "/moderator"
+                                                :style {:border 0 :border-radius 0}}
+      "Moderator"])
    (for [{:keys [username name] :as participant} participants]
      ^{:key participant}
      (let [href (str "/sender/" sender "/recipient/" username)]
@@ -40,12 +41,12 @@
         (when-let [new-message-count (get users-to-new-messages username)]
           [:span.tag.tag-pill.tag-primary.ml-1 {:style {:float "right"}} new-message-count])]))])
 
-(defn navbar [sender participants users-to-new-messages]
+(defn navbar [sender participants users-to-new-messages is-moderator?]
   [:div.col-sm-4.col-md-2.p-0.h-100.hidden-xs-down
    [:div.navbar.navbar-default.p-0.bg-faded.h-100 {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto" :z-index 1}}
-    [navbar-entries sender participants users-to-new-messages]]])
+    [navbar-entries sender participants users-to-new-messages is-moderator?]]])
 
-(defn navbar-mobile [turn-name sender-id participants users-to-new-messages]
+(defn navbar-mobile [turn-name sender-id participants users-to-new-messages is-moderator?]
   [:div.col-xs-12.p-0.hidden-sm-up {:style {:display (if @navbar-collapsed? "none" "block")
                                             :height (str "calc(100vh - " header-height ")")
                                             :position "absolute"
@@ -53,7 +54,7 @@
    [:div.navbar.navbar-default.p-0.bg-faded.h-100.bg-faded {:style {:border-radius 0 :border-right "1px solid #d9d9d9" :overflow "auto"}}
     [:ul.list-group
      [:span.list-group-item.text-justify.bg-faded {:style {:border 0 :border-radius 0}} turn-name]]
-    [navbar-entries sender-id participants users-to-new-messages]]])
+    [navbar-entries sender-id participants users-to-new-messages is-moderator?]]])
 
 (defn chat-input [app on-click-action style-opts]
   [:form

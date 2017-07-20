@@ -101,8 +101,17 @@
                         :name)]
         [layout/chat-layout turn-name
          [:div.row.h-100
-          [navbar-mobile turn-name sender (get-in @app [:users]) @(get-in @app [:users-to-new-messages])]
-          [navbar sender (get-in @app [:users]) @(get-in @app [:users-to-new-messages])]
+          [navbar-mobile
+            turn-name
+            sender
+            (get-in @app [:users])
+            @(get-in @app [:users-to-new-messages])
+            (get-in local-storage [:session :is_moderator])]
+          [navbar
+            sender
+            (get-in @app [:users])
+            @(get-in @app [:users-to-new-messages])
+            (get-in local-storage [:session :is_moderator])]
           [:div.col-sm-8.col-md-10.p-0
            [:form {:on-submit (partial change-turn (get-in @app [:selected-turn]))}
             [:div#change-turn.col.col-md-12.bg-faded.p-1.input-group {:style {:position "absolute"
