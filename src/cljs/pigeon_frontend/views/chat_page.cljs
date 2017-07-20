@@ -39,6 +39,14 @@
           (set! (.-scrollTop (.getElementById js/document "scrollbox"))
                 (.-scrollHeight (.getElementById js/document "messages"))))))))
 
+(defn chat-input-row-amount [message]
+  (let [value message
+        rows (count (re-seq #"\n" value))
+        rowcap 6
+        line-height-in-pixels 18
+        rows-or-rowcap (if (< rows rowcap) rows rowcap)]
+    (* rows-or-rowcap line-height-in-pixels)))
+
 (defn message-succesful [response]
   (swap! app assoc :message ""))
 
@@ -133,4 +141,4 @@
            [chat-input app ;;@(re/subscribe [[:chat-input :value]])
             {:on-click (partial send-message {:sender sender
                                               :recipient recipient})}
-            {:height (str "calc(5em + " @(re/subscribe [[:chat-input :rows]]) "px)" )}]]]]))))
+            {:height (str "calc(5em + " (chat-input-row-amount (:message @app)) "px)" )}]]]]))))
