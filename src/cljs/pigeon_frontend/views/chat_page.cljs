@@ -60,10 +60,11 @@
 
 (defn send-message [{:keys [sender recipient]} event]
   (.preventDefault event)
-  (POST (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
-    {:params {:message (:message @app)}
-     :handler #(message-succesful %1)
-     :error-handler #(error-handler %1)}))
+  (when (not-empty (:message @app))
+    (POST (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
+      {:params {:message (:message @app)}
+       :handler #(message-succesful %1)
+       :error-handler #(error-handler %1)})))
 
 (defn chat-page [{:keys [sender recipient] :as params} users-to-new-messages]
   ;; todo: (re/dispatch [[:fields :chat-page :room_id] (:id params)])
