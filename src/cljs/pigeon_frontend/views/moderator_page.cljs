@@ -125,7 +125,7 @@
                 ^{:key turn}
                 [:option {:value id} name])]
              [:button.input-group-addon.btn.btn-primary {:type "submit"} "Change turn"]]]
-           [:div.col.col-md-12.p-0 {:style {:overflow "auto"
+           [:div#scrollbox.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em)")}}
             [:div#messages.pt-1.pb-1
              (let [messages-by-message-attempts (group-by :message_attempt (get-in @app [:messages]))]

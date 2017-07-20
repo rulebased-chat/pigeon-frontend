@@ -17,7 +17,9 @@
                                                 chat-input
                                                 users-to-new-messages
                                                 error-container]]
-            [pigeon-frontend.ajax :refer [error-handler]]))
+            [pigeon-frontend.ajax :refer [error-handler]]
+            [cljs.core.async :refer [<! timeout]])
+  (:use-macros [cljs.core.async.macros :only [go]]))
 
 (def app (reagent/atom {:sender ""
                         :recipient ""
@@ -26,13 +28,29 @@
                         :users nil
                         :users-to-new-messages users-to-new-messages}))
 
+(add-watch app :message-watcher
+  (fn [key atom old-state new-state]
+    (when (not= (get-in old-state [:messages])
+                (get-in new-state [:messages]))
+      (do (println "scrollbox" (.-scrollTop (.getElementById js/document "scrollbox")))
+          (println "scrollHeight with buffer subtracted (600)" (- (.-scrollHeight (.getElementById js/document "messages")) 600))
+          (println "near enough bottom?" (>= (.-scrollTop (.getElementById js/document "scrollbox"))
+                                             (- (.-scrollHeight (.getElementById js/document "messages"))
+                                                600))))
+      (if-let [near-enough-bottom? (>= (.-scrollTop (.getElementById js/document "scrollbox"))
+                                     (- (.-scrollHeight (.getElementById js/document "messages"))
+                                       600))]
+        (go (<! (timeout 50))
+          (set! (.-scrollTop (.getElementById js/document "scrollbox"))
+                (.-scrollHeight (.getElementById js/document "messages"))))))))
+
 (defn message-succesful [response]
   (swap! app assoc :message ""))
 
 (defn get-messages [{:keys [sender recipient]}]
   (GET (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
     {:request-format :json
-     :handler #(swap! app assoc :messages %)
+     :handler (fn [response] (swap! app assoc :messages response))
      :error-handler #(error-handler %1)
      :response-format :json
      :keywords? true}))
@@ -87,7 +105,7 @@
             @(get-in @app [:users-to-new-messages])
             (get-in local-storage [:session :is_moderator])]
           [:div.col-sm-8.col-md-10.p-0
-           [:div.col.col-md-12.p-0 {:style {:overflow "auto"
+           [:div#scrollbox.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
             [:div#messages.p-1
              (let [messages-by-turns (group-by :turn (get-in @app [:messages]))]

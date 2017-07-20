@@ -61,7 +61,7 @@
             @(get-in @app [:users-to-new-messages])
             (get-in local-storage [:session :is_moderator])]
           [:div.col-sm-8.col-md-10.p-0
-           [:div.col.col-md-12.p-0 {:style {:overflow "auto"
+           [:div#scrollbox.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em - " (str @(re/subscribe [[:chat-input :rows]]) "px") ")")}}
             [:div#messages.p-1
              (for [error @errors]
