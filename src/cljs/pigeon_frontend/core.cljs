@@ -41,9 +41,9 @@
   (reset! navbar-collapsed? true)
   (swap! chat-page/app assoc :messages nil)
   (swap! users-to-new-messages dissoc (:recipient params))
-  (session/put! :get-turns-fn chat-page/get-turns)
+  (session/put! :get-turns-fn    (partial chat-page/get-turns chat-page/app))
   (session/put! :get-messages-fn (partial chat-page/get-messages params))
-  (session/put! :current-page (partial chat-page params)))
+  (session/put! :current-page    (partial chat-page params)))
 
 (secretary/defroute "/moderator" []
   ;; todo: moderator username here
