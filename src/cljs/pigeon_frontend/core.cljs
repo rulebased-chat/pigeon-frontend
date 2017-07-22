@@ -46,7 +46,6 @@
   (session/put! :current-page    (partial chat-page params)))
 
 (secretary/defroute "/moderator" []
-  ;; todo: moderator username here
   (reset! navbar-collapsed? true)
   (session/put! :get-turns-fn moderator-page/get-turns)
   (session/put! :get-messages-fn moderator-page/get-messages)
