@@ -35,6 +35,7 @@
                                                 :id)]
                            (swap! app assoc :turns turns :selected-turn active-turn-id)))
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -43,6 +44,7 @@
     {:request-format :json
      :handler #(swap! app assoc :messages %)
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -51,6 +53,7 @@
   (DELETE (get-context-path (str "/api/v0/message/" id))
     {:handler get-messages
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -59,6 +62,7 @@
   (PATCH (get-context-path (str "/api/v0/message/" id))
     {:handler get-messages
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -67,6 +71,7 @@
   (DELETE (get-context-path (str "/api/v0/message_attempt/" id))
     {:handler get-messages
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -75,6 +80,7 @@
   (PATCH (get-context-path (str "/api/v0/message_attempt/" id))
     {:handler get-messages
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -82,6 +88,7 @@
   (.preventDefault response)
   (POST (get-context-path (str "/api/v0/turn/" id))
     {:error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -91,6 +98,7 @@
             {:request-format :json
              :handler #(swap! app assoc :users %)
              :error-handler #(error-handler %1)
+             :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
              :response-format :json
              :keywords? true})
         _ (get-turns)]

@@ -55,6 +55,7 @@
     {:request-format :json
      :handler (fn [response] (swap! app assoc :messages response))
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -63,6 +64,7 @@
     {:request-format :json
      :handler #(swap! app assoc :turns %1)
      :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
      :response-format :json
      :keywords? true}))
 
@@ -71,6 +73,7 @@
   (when (not-empty (:message @app))
     (POST (get-context-path (str "/api/v0/message/sender/" sender "/recipient/" recipient))
       {:params {:message (:message @app)}
+       :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
        :handler #(message-succesful %1)
        :error-handler #(error-handler %1)})))
 
@@ -87,6 +90,7 @@
                {:request-format :json
                 :handler #(swap! app assoc :users %)
                 :error-handler #(error-handler %1)
+                :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
                 :response-format :json
                 :keywords? true})
         _ (get-turns app)]

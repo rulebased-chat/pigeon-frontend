@@ -39,6 +39,7 @@
                {:request-format :json
                 :handler #(swap! app assoc :users %)
                 :error-handler #(error-handler %1)
+                :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
                 :response-format :json
                 :keywords? true})
         _ (get-turns app)]
