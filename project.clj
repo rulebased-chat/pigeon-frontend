@@ -110,8 +110,8 @@
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev "true"
-                         :api-context "http://localhost:3000"
-                         :ws-context  "ws://localhost:3000"}}
+                         :api-context "http://localhost:8080"
+                         :ws-context  "ws://localhost:8080"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]

@@ -116,14 +116,14 @@
              :keywords? true})
         _ (get-turns)]
     (fn []
-      (let [turn-name (->> (get-in @app  [:turns])
-                        (filter #(:active %))
-                        first
-                        :name)]
-        [layout/chat-layout turn-name
+      (let [active-turn-name (->> (get-in @app  [:turns])
+                                  (filter #(:active %))
+                                  first
+                                  :name)]
+        [layout/chat-layout active-turn-name
          [:div.row.h-100
           [navbar-mobile
-            turn-name
+            active-turn-name
             sender
             (get-in @app [:users])
             @(get-in @app [:users-to-new-messages])
