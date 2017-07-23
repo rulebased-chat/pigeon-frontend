@@ -17,13 +17,26 @@
                                                 chat-input
                                                 users-to-new-messages
                                                 error-container]]
-            [pigeon-frontend.ajax :refer [error-handler]]))
+            [pigeon-frontend.ajax :refer [error-handler]]
+            [cljs.core.async :refer [<! timeout]])
+  (:use-macros [cljs.core.async.macros :only [go]]))
 
 (def app (reagent/atom {:messages nil
                         :users nil
                         :turns nil
                         :selected-turn nil
                         :users-to-new-messages users-to-new-messages}))
+
+(add-watch app :message-watcher
+  (fn [key atom old-state new-state]
+    (when (not= (get-in old-state [:messages])
+            (get-in new-state [:messages]))
+      (if-let [near-enough-bottom? (>= (.-scrollTop (.getElementById js/document "scrollbox"))
+                                       (- (.-scrollHeight (.getElementById js/document "messages"))
+                                          600))]
+        (go (<! (timeout 50))
+          (set! (.-scrollTop (.getElementById js/document "scrollbox"))
+            (.-scrollHeight (.getElementById js/document "messages"))))))))
 
 (defn get-turns []
   (GET (get-context-path "/api/v0/turn")

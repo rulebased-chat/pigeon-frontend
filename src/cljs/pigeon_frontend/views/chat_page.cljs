@@ -33,8 +33,8 @@
     (when (not= (get-in old-state [:messages])
                 (get-in new-state [:messages]))
       (if-let [near-enough-bottom? (>= (.-scrollTop (.getElementById js/document "scrollbox"))
-                                     (- (.-scrollHeight (.getElementById js/document "messages"))
-                                       600))]
+                                       (- (.-scrollHeight (.getElementById js/document "messages"))
+                                          600))]
         (go (<! (timeout 50))
           (set! (.-scrollTop (.getElementById js/document "scrollbox"))
                 (.-scrollHeight (.getElementById js/document "messages"))))))))

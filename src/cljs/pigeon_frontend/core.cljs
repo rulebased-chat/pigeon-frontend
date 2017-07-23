@@ -47,6 +47,7 @@
 
 (secretary/defroute "/moderator" []
   (reset! navbar-collapsed? true)
+  (swap! moderator-page/app assoc :messages nil)
   (session/put! :get-turns-fn moderator-page/get-turns)
   (session/put! :get-messages-fn moderator-page/get-messages)
   (session/put! :current-page (partial moderator-page
