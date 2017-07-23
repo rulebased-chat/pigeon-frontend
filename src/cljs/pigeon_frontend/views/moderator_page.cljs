@@ -136,7 +136,7 @@
            [:div#scrollbox.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em)")}}
             [:div#messages.pt-1.pb-1
-             (let [messages-by-message-attempts (group-by :message_attempt (get-in @app [:messages]))]
+             (let [messages-by-message-attempts (sort-by key (group-by :message_attempt (get-in @app [:messages])))]
                (for [[message-attempt-id [{:keys [message_attempt_deleted turn_name]} :as messages] :as entry] messages-by-message-attempts]
                  ^{:key entry}
                  [:div
