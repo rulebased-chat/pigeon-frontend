@@ -47,7 +47,7 @@
 ;; room page
 
 (defn get-navbar-mobile-collapsed [db]
-  (get-in db [:navbar-mobile :collapsed]))
+  (get-in db [:navbar-mobile :collapsed] true))
 
 (re/reg-sub
   [:navbar-mobile :collapsed]
@@ -72,7 +72,7 @@
     (get-in db [:data :room :sender :id])))
 
 (defn get-chat-input-value [db]
-  (get-in db [:chat-input :value]))
+  (get-in db [:chat-input :value] ""))
 
 (re/reg-sub
   [:chat-input :value]

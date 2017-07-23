@@ -28,14 +28,11 @@
 
 
 (defroutes routes
-  (GET "/" [] (loading-page))
-  (GET "/register" [] (loading-page))
+  (GET "/" []      (loading-page))
   (GET "/login" [] (loading-page))
-  (GET "/rooms" [] (loading-page))
-  (GET "/room" [] (loading-page))
-  (GET "/room/:id" [_] (loading-page))
-  (GET "/room/:id/sender/:sender/recipient/:recipient" [_] (loading-page))
-  
+  (GET "/sender/:sender/recipient/:recipient" [_] (loading-page))
+  (GET "/moderator" [] (loading-page))
+
   (resources "/")
   (not-found "Not Found"))
 

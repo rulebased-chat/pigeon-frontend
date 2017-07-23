@@ -3,49 +3,55 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [pigeon-frontend.views.layout :as layout]
               [ajax.core :refer [GET POST PUT DELETE]]
-              [pigeon-frontend.views.register-page :refer [register-page]]
-              [pigeon-frontend.views.login-page :refer [login-page]]
-              [pigeon-frontend.views.home-page :refer [home-page]]
-              [pigeon-frontend.views.rooms-page :refer [rooms-page]]
-              [pigeon-frontend.views.room-create-page :refer [room-create-page]]
-              [pigeon-frontend.views.room-page :refer [room-page]]
-              [pigeon-frontend.views.chat-page :refer [chat-page]]
-              [pigeon-frontend.view-model :refer [app]]
+              [pigeon-frontend.views.login-page :refer [login-page make-websocket-with-defaults]]
+              [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
+              [pigeon-frontend.views.front-page :refer [front-page] :as front-page]
+              [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
+              [pigeon-frontend.view-model :refer [app ws-channel navbar-collapsed? errors]]
               [re-frame.core :as re]
               [pigeon-frontend.events]
-              [pigeon-frontend.subscriptions]))
+              [pigeon-frontend.subscriptions]
+              [reagent.core :as r]
+              [hodgepodge.core :refer [local-storage clear!]]
+              [pigeon-frontend.context :refer [get-context-path
+                                               get-ws-context-path]]
+              [pigeon-frontend.components :refer [users-to-new-messages]]))
 
 (defn current-page []
-  (if (session/get :query-parameters)
-    [:div [((session/get :current-page) (session/get :query-parameters))]]
-    [:div [(session/get :current-page)]]))
+  [:div [(session/get :current-page)]])
 
 ;; -------------------------
 ;; Routes
+;; Todo: session variables as private atoms
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
+  (reset! navbar-collapsed? true) ;; todo: probably could hook to some onload listener to reduce duplication...
+  (if-let [username (get-in local-storage [:session :username])]
+    (do (session/put! :get-turns-fn (partial chat-page/get-turns front-page/app))
+        (session/put! :current-page (partial front-page {:username username})))
+    (do (session/put! :current-page (fn [_] [:div "Redirecting..."]))
+        (accountant/navigate! "/login"))))
 
 (secretary/defroute "/login" []
-  (session/put! :current-page #'login-page))
+  (reset! navbar-collapsed? true)
+  (session/put! :current-page #(partial #'login-page)))
 
-(secretary/defroute "/register" []
-  (session/put! :current-page #'register-page))
+(secretary/defroute "/sender/:sender/recipient/:recipient" {:as params}
+  (reset! navbar-collapsed? true)
+  (swap! chat-page/app assoc :messages nil)
+  (swap! users-to-new-messages dissoc (:recipient params))
+  (session/put! :get-turns-fn    (partial chat-page/get-turns chat-page/app))
+  (session/put! :get-messages-fn (partial chat-page/get-messages params))
+  (session/put! :current-page    (partial chat-page params)))
 
-(secretary/defroute "/rooms" []
-  (session/put! :current-page #'rooms-page))
-
-(secretary/defroute "/room" []
-  (session/put! :current-page #'room-create-page))
-
-(secretary/defroute "/room/:id" {:as params}
-  (let [params (assoc params :username @(re/subscribe [:session-username]))]
-    (session/put! :current-page #(partial room-page params))))
-
-(secretary/defroute "/room/:id/sender/:sender/recipient/:recipient" {:as params}
-  (session/put! :current-page #(partial chat-page params)))
+(secretary/defroute "/moderator" []
+  (reset! navbar-collapsed? true)
+  (swap! moderator-page/app assoc :messages nil)
+  (session/put! :get-turns-fn moderator-page/get-turns)
+  (session/put! :get-messages-fn moderator-page/get-messages)
+  (session/put! :current-page (partial moderator-page
+                                       {:sender (get-in local-storage [:session :username])})))
 
 ;; -------------------------
 ;; Initialize app
@@ -65,6 +71,6 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (re/dispatch-sync [:initialize])
-  (re/dispatch-sync [:login session])
+  (when-let [username (get-in local-storage [:session :username])]
+    (make-websocket-with-defaults username))
   (init!))

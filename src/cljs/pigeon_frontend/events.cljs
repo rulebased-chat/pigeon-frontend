@@ -4,7 +4,6 @@
             [hodgepodge.core :refer [local-storage clear!]]
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
-            [pigeon-frontend.views.rooms-page :refer [rooms-page]]
             [accountant.core :as accountant]
             [ajax.core :refer [GET POST PUT DELETE json-request-format json-response-format]]
             [pigeon-frontend.context :refer [get-context-path]]
