@@ -43,11 +43,14 @@
        [:a.btn.btn-info.text-white.hidden-sm-up
         {:on-click #(swap! navbar-collapsed? not)}
         "☰"]]
+      ;; todo: parametrize @ws-channel so that updates immediately (and not when something else changes, ie. textarea)
+      (if (or (nil? @ws-channel)
+              (= 3 (.-readyState @ws-channel)))
+        [:span.navbar-brand.ml-1.text-danger "Websocket closed"])
       (if-let [logged-in? (get-in local-storage [:session])]
         [:div.float-xs-right
          [:button.btn.btn-info {:on-click logout}
           "Log out"]]
         [:div.float-xs-right
-         [:small.m-r-1 [:a {:href "/login"} "Log in"]]
-         [:a.btn.btn-info {:href "/register"} "Sign up"]])]
+         [:small.m-r-1 [:a {:href "/login"} "Log in"]]])]
      [:div.container-fluid {:style {:height "calc(100vh - 55px)"}} body]]))
