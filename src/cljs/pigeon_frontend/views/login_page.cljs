@@ -23,6 +23,7 @@
 (defn receive-transit-msg!
   [update-fn]
   (fn [message]
+    (println "Incoming websocket message" (->> message .-data))
     (let [reader (transit/reader :json)]
       (update-fn
         (->> message .-data (transit/read reader))))))
