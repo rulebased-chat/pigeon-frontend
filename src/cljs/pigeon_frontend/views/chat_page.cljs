@@ -26,6 +26,7 @@
                         :message ""
                         :messages nil
                         :users nil
+                        :message-character-limit nil
                         :users-to-new-messages users-to-new-messages}))
 
 (add-watch app :message-watcher
@@ -68,6 +69,16 @@
      :response-format :json
      :keywords? true}))
 
+(defn get-message-character-limit [app]
+  (GET (get-context-path "/api/v0/message_character_limit")
+    {:request-format :json
+     :handler (fn [{:keys [message-character-limit]}]
+                (swap! app assoc :message-character-limit message-character-limit))
+     :error-handler #(error-handler %1)
+     :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
+     :response-format :json
+     :keywords? true}))
+
 (defn send-message [{:keys [sender recipient]} event]
   (.preventDefault event)
   (when (not-empty (:message @app))
@@ -78,13 +89,6 @@
        :error-handler #(error-handler %1)})))
 
 (defn chat-page [{:keys [sender recipient] :as params} users-to-new-messages]
-  ;; todo: (re/dispatch [[:fields :chat-page :room_id] (:id params)])
-  ;; todo: (re/dispatch [[:fields :chat-page :sender] sender-id])
-  ;; todo: (re/dispatch [[:fields :chat-page :recipient] recipient-id])
-  ;; todo: (re/dispatch [[:get-participants] {:room_id id}])
-  ;; todo: (re/dispatch [[:get-room-messages] {:room_id   id
-  ;; todo:                                     :sender    sender-id
-  ;; todo:                                     :recipient recipient-id}])
   (let [_ (get-messages params)
         _ (GET (get-context-path (str "/api/v0/users/" sender))
                {:request-format :json
@@ -93,7 +97,8 @@
                 :headers {:authorization (str "Bearer " (get-in local-storage [:session :token]))}
                 :response-format :json
                 :keywords? true})
-        _ (get-turns app)]
+        _ (get-turns app)
+        _ (get-message-character-limit app)]
     (fn []
       (let [active-turn-name (->> (get-in @app  [:turns])
                                   (filter #(:active %))
