@@ -68,6 +68,9 @@
                                    :placeholder "Write a message"
                                    :on-change #(swap! app assoc :message (-> % .-target .-value))
                                    :value (get-in @app [:message])}]
+    (when-let [message-character-limit (:message-character-limit @app)]
+      [:button.input-group-addon {:disabled true}
+       (- message-character-limit (count (:message @app)))])
     [:button.input-group-addon.btn.btn-primary (merge {:type "submit"} on-click-action) "Send"]]])
 
 (defn error-container [error]
