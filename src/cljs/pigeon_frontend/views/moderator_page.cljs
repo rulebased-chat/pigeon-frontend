@@ -29,11 +29,11 @@
 
 (add-watch app :message-watcher
   (fn [key atom old-state new-state]
-    (when (not= (get-in old-state [:messages])
-            (get-in new-state [:messages]))
+    (when (and (empty? (get-in old-state [:messages]))
+               (not-empty (get-in new-state [:messages])))
       (if-let [near-enough-bottom? (>= (.-scrollTop (.getElementById js/document "scrollbox"))
                                        (- (.-scrollHeight (.getElementById js/document "messages"))
-                                          600))]
+                                       600))]
         (go (<! (timeout 50))
           (set! (.-scrollTop (.getElementById js/document "scrollbox"))
             (.-scrollHeight (.getElementById js/document "messages"))))))))
@@ -145,7 +145,7 @@
               (for [{:keys [id name] :as turn} (get-in @app [:turns])]
                 ^{:key turn}
                 [:option {:value id} name])]
-             [:button.input-group-addon.btn.btn-primary {:type "submit"} "Change turn"]]]
+             [:button.input-group-addon.btn.btn-secondary {:type "submit"} "Change turn"]]]
            [:div#scrollbox.col.col-md-12.p-0 {:style {:overflow "auto"
                                             :height (str "calc(100vh - " header-height " - 5em)")}}
             [:div#messages.pt-1.pb-1
@@ -159,8 +159,10 @@
                     [:span.text-muted.mr-1 (str "Turn " turn_name)]
                     [:span.mr-1 (str "Message attempt #" message-attempt-id)]
                     (if message_attempt_deleted
-                      [:a {:href "" :on-click (partial undo-delete-message-attempt message-attempt-id)} "Undo delete"]
-                      [:a {:href "" :on-click (partial delete-message-attempt message-attempt-id)} "Delete"])]]
+                      [:button.btn.btn-sm.btn-outline-success {:on-click (fn [response] (undo-delete-message-attempt message-attempt-id response)
+                                                             false)} "Undo delete"]
+                      [:button.btn.btn-sm.btn-outline-danger {:on-click (fn [response] (delete-message-attempt message-attempt-id response)
+                                                             false)} "Delete"])]]
                   (for [message messages]
                     ^{:key message}
                     [:div.col.pl-1.pr-1
@@ -169,10 +171,12 @@
                       [:small [:strong (str (:sender_name message)
                                          "→" (:recipient_name message)
                                          "→" (:actual_recipient_name message))]
-                       [:span.text-muted.ml-1 (:updated message)]
+                       [:span.text-muted.ml-1.mr-1 (:updated message)]
                        (if (:deleted message)
-                         [:a.ml-1 {:href "" :on-click (partial undo-delete-message (:id message))} "Undo delete"]
-                         [:a.ml-1 {:href "" :on-click (partial delete-message (:id message))} "Delete"])]]])]))
+                         [:button.btn.btn-sm.btn-outline-success {:on-click (fn [response] (undo-delete-message (:id message) response)
+                                                                     false)} [:small "Undo delete"]]
+                         [:button.btn.btn-sm.btn-outline-danger {:on-click (fn [response] (delete-message (:id message) response)
+                                                                     false)} [:small "Delete"]])]]])]))
              [:div.px-1 (for [error @errors]
                           ^{:key error}
                           [error-container error])]]]]]]))))

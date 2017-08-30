@@ -22,7 +22,7 @@
         [:a.navbar-brand {:href "/"} "pigeon-frontend"]
         (if-let [logged-in? (get-in local-storage [:session])]
           [:div.pull-xs-right
-            [:button.btn.btn-info {:on-click logout}
+            [:button.btn.btn-info.btn-outline-primary {:on-click logout}
              "Log out"]])]
       [:div.jumbotron
         [:h2 header]
@@ -49,7 +49,7 @@
         [:span.navbar-brand.ml-1.text-danger "Websocket closed"])
       (if-let [logged-in? (get-in local-storage [:session])]
         [:div.float-xs-right
-         [:button.btn.btn-info {:on-click logout}
+         [:button.btn.btn-info.btn-outline-primary {:on-click logout}
           "Log out"]]
         [:div.float-xs-right
          [:small.m-r-1 [:a {:href "/login"} "Log in"]]])]
