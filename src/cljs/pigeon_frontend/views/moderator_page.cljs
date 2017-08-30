@@ -159,10 +159,8 @@
                     [:span.text-muted.mr-1 (str "Turn " turn_name)]
                     [:span.mr-1 (str "Message attempt #" message-attempt-id)]
                     (if message_attempt_deleted
-                      [:button.btn.btn-sm.btn-outline-success {:on-click (fn [response] (undo-delete-message-attempt message-attempt-id response)
-                                                             false)} "Undo delete"]
-                      [:button.btn.btn-sm.btn-outline-danger {:on-click (fn [response] (delete-message-attempt message-attempt-id response)
-                                                             false)} "Delete"])]]
+                      [:button.btn.btn-sm.btn-outline-success {:on-click (partial undo-delete-message-attempt message-attempt-id)} "Undo delete"]
+                      [:button.btn.btn-sm.btn-outline-danger {:on-click (partial delete-message-attempt message-attempt-id)} "Delete"])]]
                   (for [message messages]
                     ^{:key message}
                     [:div.col.pl-1.pr-1
@@ -173,10 +171,8 @@
                                          "→" (:actual_recipient_name message))]
                        [:span.text-muted.ml-1.mr-1 (:updated message)]
                        (if (:deleted message)
-                         [:button.btn.btn-sm.btn-outline-success {:on-click (fn [response] (undo-delete-message (:id message) response)
-                                                                     false)} [:small "Undo delete"]]
-                         [:button.btn.btn-sm.btn-outline-danger {:on-click (fn [response] (delete-message (:id message) response)
-                                                                     false)} [:small "Delete"]])]]])]))
+                         [:button.btn.btn-sm.btn-outline-success {:on-click (partial undo-delete-message (:id message))} [:small "Undo delete"]]
+                         [:button.btn.btn-sm.btn-outline-danger {:on-click (partial delete-message (:id message))} [:small "Delete"]])]]])]))
              [:div.px-1 (for [error @errors]
                           ^{:key error}
                           [error-container error])]]]]]]))))
