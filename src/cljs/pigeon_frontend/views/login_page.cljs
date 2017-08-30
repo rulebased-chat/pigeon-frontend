@@ -84,12 +84,13 @@
     [:div.row
       [:div.col-sm-12
         [:form {:method "POST"}
-          [:p [:input {:name "username"
-                       :placeholder "username"
-                       :value (get-in @app [:username])
-                       :on-change #(swap! app assoc :username (-> % .-target .-value))}]]
-          [:p [:input {:name "password"
-                       :placeholder "password" :type "password"
-                       :value (get-in @app [:password])
-                       :on-change #(swap! app assoc :password (-> % .-target .-value))}]]
-          [:p [:button.btn.btn-default {:on-click login-user} "Submit"]]]]]])
+          [:div.input-group.mb-1 [:span.input-group-addon "Username"]
+                            [:input.form-control {:name "username"
+                                                  :value (get-in @app [:username])
+                                                  :on-change #(swap! app assoc :username (-> % .-target .-value))}]]
+          [:div.input-group.mb-1 [:span.input-group-addon "Password"]
+                            [:input.form-control {:name "password"
+                                                  :type "password"
+                                                  :value (get-in @app [:password])
+                                                  :on-change #(swap! app assoc :password (-> % .-target .-value))}]]
+          [:p [:button.btn.btn-default.btn-outline-primary {:on-click login-user} "Log in"]]]]]])
