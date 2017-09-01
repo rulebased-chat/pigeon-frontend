@@ -18,7 +18,11 @@
                                                 users-to-new-messages
                                                 error-container]]
             [pigeon-frontend.ajax :refer [error-handler]]
-            [cljs.core.async :refer [<! timeout]])
+            [cljs.core.async :refer [<! timeout]]
+            [cljs-time.core :as time-core]
+            [cljs-time.format :as time-format]
+            [pigeon-frontend.time :refer [parse-zulu
+                                          to-local-time-str]])
   (:use-macros [cljs.core.async.macros :only [go]]))
 
 (def app (reagent/atom {:messages nil
@@ -169,7 +173,11 @@
                       [:small [:strong (str (:sender_name message)
                                          "→" (:recipient_name message)
                                          "→" (:actual_recipient_name message))]
-                       [:span.text-muted.ml-1.mr-1 (:updated message)]
+                       [:span.text-muted.ml-1.mr-1
+                        {:title (:updated message)}
+                         (-> (:updated message)
+                             parse-zulu
+                             to-local-time-str)]
                        (if (:deleted message)
                          [:button.btn.btn-sm.btn-outline-success {:on-click (partial undo-delete-message (:id message))} [:small "Undo delete"]]
                          [:button.btn.btn-sm.btn-outline-danger {:on-click (partial delete-message (:id message))} [:small "Delete"]])]]])]))
