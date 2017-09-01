@@ -18,7 +18,9 @@
                                                 users-to-new-messages
                                                 error-container]]
             [pigeon-frontend.ajax :refer [error-handler]]
-            [cljs.core.async :refer [<! timeout]])
+            [cljs.core.async :refer [<! timeout]]
+            [pigeon-frontend.time :refer [parse-zulu
+                                          to-local-time-str]])
   (:use-macros [cljs.core.async.macros :only [go]]))
 
 (def app (reagent/atom {:sender ""
@@ -138,12 +140,20 @@
                        [:p
                         [:p.mb-0 (:message message)]
                         [:small [:strong (:sender_name message)]
-                         [:span.text-muted.ml-1 (:updated message)]]]]
+                         [:span.text-muted.ml-1
+                           {:title (:updated message)}
+                           (-> (:updated message)
+                             parse-zulu
+                             to-local-time-str)]]]]
                       [:div.col.col-md-6.p-0
                        [:p
                         [:p.mb-0 (:message message)]
                         [:small [:strong (:sender_name message)]
-                         [:span.text-muted.ml-1 (:updated message)]]]]))]))
+                         [:span.text-muted.ml-1
+                           {:title (:updated message)}
+                           (-> (:updated message)
+                             parse-zulu
+                             to-local-time-str)]]]]))]))
              (for [error @errors]
                ^{:key error}
                [error-container error])]]
