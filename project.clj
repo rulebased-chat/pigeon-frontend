@@ -27,7 +27,8 @@
                  [prismatic/dommy "1.1.0"]
                  [hodgepodge "0.1.3"]
                  [re-frame "0.9.0"]
-                 [com.cognitect/transit-cljs "0.8.239"]]
+                 [com.cognitect/transit-cljs "0.8.239"]
+                 [com.andrewmcveigh/cljs-time "0.5.0"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.1"]
