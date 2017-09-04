@@ -7,6 +7,7 @@
 
 (defmacro get-api-context-env [] (get environ/env :api-context))
 (defmacro get-ws-context-env [] (get environ/env :ws-context))
+(defmacro get-title [] (get environ/env :title))
 
 (defn -main [& args]
   (let [port (Integer/parseInt (or (env :port) "3001"))]

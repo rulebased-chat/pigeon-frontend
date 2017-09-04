@@ -112,7 +112,8 @@
 
                    :env {:dev "true"
                          :api-context "http://localhost:8080"
-                         :ws-context  "ws://localhost:8080"}}
+                         :ws-context  "ws://localhost:8080"
+                         :title "Pigeon"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]

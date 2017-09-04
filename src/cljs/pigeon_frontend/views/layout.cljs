@@ -6,7 +6,8 @@
             [pigeon-frontend.view-model :refer [app ws-channel navbar-collapsed? errors]]
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]
-            [pigeon-frontend.components :refer [error-container]]))
+            [pigeon-frontend.components :refer [error-container]]
+            [pigeon-frontend.context :as context]))
 
 (defn logout [_]
   (clear! local-storage)
@@ -19,7 +20,7 @@
     [:div
       [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap.css"}]
       [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
-        [:a.navbar-brand {:href "/"} "pigeon-frontend"]
+        [:a.navbar-brand {:href "/"} (context/get-title)]
         (if-let [logged-in? (get-in local-storage [:session])]
           [:div.pull-xs-right
             [:button.btn.btn-info.btn-outline-primary {:on-click logout}
