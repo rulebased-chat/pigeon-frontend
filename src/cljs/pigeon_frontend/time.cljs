@@ -14,7 +14,7 @@
 (defn to-local-time-str [datetime]
   (let [local-datetime (time-core/plus datetime (time-core/minutes timezone-difference))
         today?         (time-core/after? local-datetime (js/Date.))
-        within-a-week? (time-core/after? local-datetime (time-core/plus (time-core/today 00 00)
+        within-a-week? (time-core/after? local-datetime (time-core/plus (time-core/today)
                                                           (time-core/days -6)))]
     (cond
       today?         (time-format/unparse local-time-formatter local-datetime)
