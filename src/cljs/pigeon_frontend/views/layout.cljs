@@ -6,7 +6,7 @@
             [pigeon-frontend.view-model :refer [app ws-channel navbar-collapsed? errors]]
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]
-            [pigeon-frontend.components :refer [error-container]]
+            [pigeon-frontend.components :refer [error-container logo logo-centered]]
             [pigeon-frontend.context :as context]))
 
 (defn logout [_]
@@ -20,7 +20,9 @@
     [:div
       [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap.css"}]
       [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
-        [:a.navbar-brand {:href "/"} (context/get-title)]
+        [:span.navbar-brand
+          [:span.mr-1 [logo]]
+          (context/get-title)]
         (if-let [logged-in? (get-in local-storage [:session])]
           [:div.pull-xs-right
             [:button.btn.btn-info.btn-outline-primary {:on-click logout}
@@ -40,6 +42,7 @@
      [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap-flex.css"}]
      [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
       [:span.navbar-brand.hidden-xs-down turn_name]
+      [logo-centered]
       [:div.float-xs-left
        [:a.btn.btn-info.text-white.hidden-sm-up
         {:on-click #(swap! navbar-collapsed? not)}

@@ -80,3 +80,13 @@
                    :data-dismiss "alert"
                    :aria-label "Close"
                    :on-click #(swap! errors disj error)} "x"]])
+
+(defn logo []
+  [:img {:src "/images/logo.svg"
+         :style {:height "38px"}}])
+
+(defn logo-centered []
+  [:img {:src "/images/logo.svg"
+         :style {:height "38px"
+                 :position "absolute"
+                 :left "calc(50% - 19px)"}}])
