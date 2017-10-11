@@ -20,7 +20,7 @@
    [:link {:rel  "icon" :type "image/png" :sizes "16x16" :href "/favicon-16x16.png"}]
    [:link {:rel  "manifest" :href "/manifest.json"}]
    [:link {:rel  "mask-icon" :href "/safari-pinned-tab.svg" :color "#5bbad5"}]
-
+   [:title (get env :title)]
    [:meta {:name "theme-color" :content "#ffffff"}]
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
