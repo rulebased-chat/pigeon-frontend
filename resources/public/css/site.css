@@ -1,0 +1,15 @@
+.body-container {
+    margin:0;
+}
+
+.loader-container {
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    height:100vh;
+    opacity:0.5;
+    cursor:default;
+    font-family:arial;
+}

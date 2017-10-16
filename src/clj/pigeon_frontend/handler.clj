@@ -7,10 +7,11 @@
 
 (def mount-target
   [:div#app
-      [:h3 "ClojureScript has not been compiled!"]
-      [:p "please run "
-       [:b "lein figwheel"]
-       " in order to start the compiler"]])
+    [:div.loader-container
+     [:img {:src "/images/logo.svg"
+            :height "38px"
+            :width  "38px"}]
+     [:p "Loading"]]])
 
 (defn head []
   [:head
