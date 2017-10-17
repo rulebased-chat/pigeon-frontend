@@ -7,6 +7,7 @@
 (defn wrap-middleware [handler]
   (-> handler
       (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
+      (wrap-defaults (assoc-in site-defaults [:security :hsts] true))
       wrap-exceptions
       wrap-reload
       wrap-webjars))
