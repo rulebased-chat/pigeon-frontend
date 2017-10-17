@@ -18,7 +18,7 @@
 (defn layout [header lead-text & body]
   (fn [header lead-text & body]
     [:div
-      [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap.css"}]
+      [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap.min.css"}]
       [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
         [:span.navbar-brand
           [:span.mr-1 [logo]]
@@ -39,7 +39,7 @@
 (defn chat-layout [turn_name & body]
   (fn [turn_name & body]
     [:div {:style {:height "100vh"}}
-     [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap-flex.css"}]
+     [:link {:rel "stylesheet" :type "text/css" :href "/assets/bootstrap/css/bootstrap-flex.min.css"}]
      [:div.navbar.navbar-light.bg-faded {:style {:border-bottom "1px solid #d9d9d9" :border-radius 0}}
       [:span.navbar-brand.hidden-xs-down turn_name]
       [logo-centered]
