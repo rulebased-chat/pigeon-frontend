@@ -1,10 +1,12 @@
 (ns pigeon-frontend.core
+    (:require-macros
+      [cljs.core.async.macros :as asyncm :refer (go go-loop)])
     (:require [reagent.core :as reagent :refer [atom]]
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [ajax.core :refer [GET POST PUT DELETE]]
-              [pigeon-frontend.views.login-page :refer [login-page make-websocket-with-defaults]]
+              [pigeon-frontend.views.login-page :refer [login-page]]
               [pigeon-frontend.views.chat-page :refer [chat-page] :as chat-page]
               [pigeon-frontend.views.front-page :refer [front-page] :as front-page]
               [pigeon-frontend.views.moderator-page :refer [moderator-page] :as moderator-page]
@@ -16,7 +18,9 @@
               [hodgepodge.core :refer [local-storage clear!]]
               [pigeon-frontend.context :refer [get-context-path
                                                get-ws-context-path]]
-              [pigeon-frontend.components :refer [users-to-new-messages]]))
+              [pigeon-frontend.components :refer [users-to-new-messages]]
+              [cljs.core.async :as async :refer (<! >! put! chan)]
+              [taoensso.sente  :as sente :refer (cb-success?)]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -71,6 +75,7 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (when-let [username (get-in local-storage [:session :username])]
-    (make-websocket-with-defaults username))
+  (comment "todo"
+           (when-let [username (get-in local-storage [:session :username])]
+             (make-websocket-with-defaults username)))
   (init!))
