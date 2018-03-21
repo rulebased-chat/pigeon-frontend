@@ -13,7 +13,7 @@
 (defn logout [_]
   (clear! local-storage)
   (println "Closing websocket...")
-  (.close @ws-channel)
+  ;;(.close @ws-channel)
   (accountant/navigate! "/"))
 
 (defn layout [header lead-text & body]

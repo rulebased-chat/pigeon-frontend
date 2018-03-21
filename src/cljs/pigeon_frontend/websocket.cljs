@@ -11,7 +11,8 @@
                                                 header-height
                                                 chat-input
                                                 users-to-new-messages
-                                                error-container]]))
+                                                error-container]]
+            [hodgepodge.core :refer [local-storage]]))
 
 (defmulti chsk-routes (fn [{:as ev-msg :keys [event]}]
                         (let [[id [broadcast-event]] event]
@@ -41,7 +42,9 @@
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket! "/api/v0/chsk"
         {:type :auto ; e/o #{:auto :ajax :ws}
-         :host (clojure.string/replace (get-context-path "") #"http(s)?://" "")})]
+         :host (clojure.string/replace (get-context-path "") #"http(s)?://" "")
+         :params {:username       (get-in local-storage [:session :username])
+                  :authorization  (get-in local-storage [:session :token])}})]
   (def chsk       chsk)
   (def ch-chsk    ch-recv) ; ChannelSocket's receive channel
   (def chsk-send! send-fn) ; ChannelSocket's send API fn
