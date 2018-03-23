@@ -20,7 +20,8 @@
                                                get-ws-context-path]]
               [pigeon-frontend.components :refer [users-to-new-messages]]
               [cljs.core.async :as async :refer (<! >! put! chan)]
-              [taoensso.sente  :as sente :refer (cb-success?)]))
+              [taoensso.sente  :as sente :refer (cb-success?)]
+              [pigeon-frontend.websocket :as websocket]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -75,7 +76,6 @@
   (mount-root))
 
 (defn initialize-app! [session]
-  (comment "todo"
-           (when-let [username (get-in local-storage [:session :username])]
-             (make-websocket-with-defaults username)))
+  (when-let [username (get-in local-storage [:session :username])]
+    (websocket/start-chsk!))
   (init!))

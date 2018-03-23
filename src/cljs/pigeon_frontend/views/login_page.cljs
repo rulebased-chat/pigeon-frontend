@@ -13,7 +13,8 @@
               [hodgepodge.core :refer [local-storage clear!]]
               [re-frame.core :as re]
               [cognitect.transit :as transit]
-              [cljs.pprint :refer [pprint]]))
+              [cljs.pprint :refer [pprint]]
+              [pigeon-frontend.websocket :as websocket]))
 
 (def app (reagent/atom {:username ""
                         :password ""}))
@@ -64,7 +65,7 @@
 
 (defn login-successful [response]
   (assoc! local-storage :session (:session response))
-  ;;(make-websocket-with-defaults (get-in local-storage [:session :username]))
+  (websocket/start-chsk!)
   (swap! app assoc :username "")
   (swap! app assoc :password "")
   ;; todo proper address

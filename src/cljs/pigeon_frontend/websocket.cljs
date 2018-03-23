@@ -39,16 +39,37 @@
       (fn [x]
         (if (nil? x) 1 (inc x))))))
 
-(let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket! "/api/v0/chsk"
-        {:type :auto ; e/o #{:auto :ajax :ws}
-         :host (clojure.string/replace (get-context-path "") #"http(s)?://" "")
-         :params {:username       (get-in local-storage [:session :username])
-                  :authorization  (get-in local-storage [:session :token])}})]
-  (def chsk       chsk)
-  (def ch-chsk    ch-recv) ; ChannelSocket's receive channel
-  (def chsk-send! send-fn) ; ChannelSocket's send API fn
-  (def chsk-state state)   ; Watchable, read-only atom
+(def router_ (atom nil))
+(def chsk_ (atom nil))
+(def chsk-state (atom nil))
 
-  (sente/start-client-chsk-router! ch-chsk chsk-routes))
+(defn stop-router! []
+  (when-let [stop-f @router_]
+    (stop-f)))
 
+(defn start-router! [ch-chsk chsk-routes]
+  (stop-router!)
+  (reset! router_ (sente/start-client-chsk-router! ch-chsk chsk-routes)))
+
+(defn stop-chsk!
+  ([] (stop-chsk! @chsk_))
+  ([chsk] (when-let [chsk chsk]
+            (sente/chsk-disconnect! chsk))))
+
+(defn start-chsk! []
+  (stop-router!)
+  (stop-chsk!)
+
+  (let [{:keys [chsk ch-recv send-fn state]}
+        (sente/make-channel-socket! "/api/v0/chsk"
+          {:type :auto ; e/o #{:auto :ajax :ws}
+           :host (clojure.string/replace (get-context-path "") #"http(s)?://" "")
+           :params {:username       (get-in local-storage [:session :username])
+                    :authorization  (get-in local-storage [:session :token])}})]
+    (def chsk       chsk)
+    (def ch-chsk    ch-recv) ; ChannelSocket's receive channel
+    (def chsk-send! send-fn) ; ChannelSocket's send API fn
+    (set! chsk-state state)   ; Watchable, read-only atom
+    (reset! chsk_ chsk)
+
+    (start-router! ch-chsk chsk-routes)))

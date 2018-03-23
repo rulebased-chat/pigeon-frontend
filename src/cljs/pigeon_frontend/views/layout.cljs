@@ -8,12 +8,11 @@
             [re-frame.core :as re]
             [pigeon-frontend.components :refer [error-container logo logo-centered]]
             [pigeon-frontend.context :as context]
-            [pigeon-frontend.websocket :refer [chsk-state]]))
+            [pigeon-frontend.websocket :as websocket :refer [chsk-state]]))
 
 (defn logout [_]
   (clear! local-storage)
-  (println "Closing websocket...")
-  ;;(.close @ws-channel)
+  (websocket/stop-chsk!)
   (accountant/navigate! "/"))
 
 (defn layout [header lead-text & body]
