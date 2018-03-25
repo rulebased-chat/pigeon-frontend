@@ -19,48 +19,6 @@
 (def app (reagent/atom {:username ""
                         :password ""}))
 
-;; -------------------------
-;; Websocket
-
-(comment
-  (defn receive-transit-msg!
-    [update-fn]
-    (fn [message]
-      (println "Incoming websocket message" (->> message .-data))
-      (let [reader (transit/reader :json)]
-        (update-fn
-          (->> message .-data (transit/read reader))))))
-
-  (defn make-websocket! [url receive-handler]
-    (println "Attempting to connect websocket")
-    (try (if-let [chan (js/WebSocket. url)]
-           (do
-             (reset! ws-channel chan)
-             (set! (.-onmessage chan) (receive-transit-msg! receive-handler))
-             (println "Websocket connection established with: " url))
-           (throw (js/Error. "Websocket connection failed!")))
-         (catch js/Error e
-           (swap! errors conj {:status      0,
-                               :status-text "Websocket failed.",
-                               :failure     :failed}))))
-
-  (defn make-websocket-with-defaults [username]
-    (make-websocket! (get-ws-context-path (str "/api/v0/ws/" username))
-      (fn [val]
-        (if (coll? val)
-          (let [[dispatch-key & args] val]
-            ;; todo using defmulti & defmethod
-            (cond
-              (= dispatch-key :reload-turns) ((session/get :get-turns-fn))
-              (= dispatch-key :reload-messages) ((session/get :get-messages-fn))
-              (= dispatch-key :message-received) (let [[username & _] args]
-                                                   (swap! users-to-new-messages update
-                                                     username
-                                                     (fn [x]
-                                                       (if (nil? x) 1 (inc x)))))
-              :else val))
-          val)))))
-
 ;; fns & login-page
 
 (defn login-successful [response]
