@@ -7,12 +7,12 @@
             [hodgepodge.core :refer [local-storage clear!]]
             [re-frame.core :as re]
             [pigeon-frontend.components :refer [error-container logo logo-centered]]
-            [pigeon-frontend.context :as context]))
+            [pigeon-frontend.context :as context]
+            [pigeon-frontend.websocket :as websocket :refer [chsk-state]]))
 
 (defn logout [_]
   (clear! local-storage)
-  (println "Closing websocket...")
-  (.close @ws-channel)
+  (websocket/stop-chsk!)
   (accountant/navigate! "/"))
 
 (defn layout [header lead-text & body]
@@ -48,8 +48,7 @@
         {:on-click #(swap! navbar-collapsed? not)}
         "☰"]]
       ;; todo: parametrize @ws-channel so that updates immediately (and not when something else changes, ie. textarea)
-      (if (or (nil? @ws-channel)
-              (= 3 (.-readyState @ws-channel)))
+      (when (false? (:open? @chsk-state))
         [:span.navbar-brand.ml-1.text-danger "Websocket closed"])
       (if-let [logged-in? (get-in local-storage [:session])]
         [:div.float-xs-right
